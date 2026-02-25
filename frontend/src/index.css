@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+.input {
+  background-color: #0f172a;
+  border: 1px solid #1e293b;
+  padding: 8px 10px;
+  border-radius: 6px;
+  color: white;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #f97316;
+}
+
+
+#zmmtg-root {
+  display: none; 
+}
+
+body.showing-meeting #zmmtg-root {
+  display: block !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background-color: black;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Zoom Root Default State */
+#zmmtg-root {
+  display: none;
+  background-color: #000;
+}
+
+ body.showing-meeting {
+  overflow: hidden !important;
+  position: fixed; 
+  width: 100%;
+}
+
+body.showing-meeting #zmmtg-root {
+  display: block !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 99999 !important;
+}
+
+#wc-footer {
+    bottom: 0 !important;
+}
+
+body.showing-meeting #root {
+  display: none !important;
+}
