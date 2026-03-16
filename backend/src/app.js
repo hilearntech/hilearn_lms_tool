@@ -1,5 +1,5 @@
 const express = require("express");
-const cors = require("cors"); 
+const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
 const User = require("./models/User");
@@ -32,7 +32,8 @@ const app = express();
 
 // CORS Configuration
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+  // res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL || "http://localhost:5173");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Access-Control-Allow-Credentials", "true");
@@ -47,8 +48,8 @@ app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use((req, res, next) => {
-  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-  next();
+  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  next();
 });
 app.use('/api/zoom', zoomRoutes);
 
@@ -56,11 +57,11 @@ app.use('/api/zoom', zoomRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/admin", adminFacultyRoutes);
-app.use("/api/student", studentRoutes); 
+app.use("/api/student", studentRoutes);
 app.use("/api/students", studentRoutes);
-app.use("/api/courses", courseRoutes);  
-app.use("/api/lectures", lectureRoutes); 
-app.use("/api/attendance", attendanceRoutes); 
+app.use("/api/courses", courseRoutes);
+app.use("/api/lectures", lectureRoutes);
+app.use("/api/attendance", attendanceRoutes);
 
 app.use("/api/mentor", mentorRoutes);
 app.use("/api/payments", paymentRoutes);
@@ -77,10 +78,10 @@ app.use("/uploads", express.static("uploads"));
 
 const seedSuperAdmin = async () => {
   try {
-    
+
     const adminExists = await User.findOne({ role: "superadmin" });
 
-    
+
     if (!adminExists) {
       const hashedPassword = await bcrypt.hash(process.env.SUPER_ADMIN_PASSWORD || "admin123", 10);
       await User.create({
@@ -127,20 +128,20 @@ cron.schedule("*/5 * * * *", async () => {
     const windowStart = new Date(now.getTime() + 25 * 60000);
     const windowEnd = new Date(now.getTime() + 35 * 60000);
 
-   
+
     const upcomingLiveClasses = await Lecture.find({
       lectureType: "live",
-      reminderSent: { $ne: true }, 
+      reminderSent: { $ne: true },
       date: { $gte: windowStart, $lte: windowEnd }
     });
 
     if (upcomingLiveClasses.length > 0) {
       for (let lecture of upcomingLiveClasses) {
-        
+
         const enrolledStudents = await User.find({ enrolledCourses: lecture.course });
 
         for (let student of enrolledStudents) {
-         
+
           await Notification.create({
             student: student._id,
             title: "Class Starting Soon! 🎥",
