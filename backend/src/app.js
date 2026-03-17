@@ -106,9 +106,9 @@ const seedData = async () => {
     const count = await Course.countDocuments();
     if (count === 0) {
       const defaultCourses = [
-        { title: "MERN Stack Web Development", description: "Master React, Node, Express and MongoDB.", price: "25000", duration: "6 Months", category: "Programming" },
-        { title: "Graphic Designing", description: "Learn Photoshop, Illustrator and Canva.", price: "12000", duration: "3 Months", category: "Design" },
-        { title: "Digital Marketing", description: "SEO, Social Media and Ads masterclass.", price: "15000", duration: "4 Months", category: "Marketing" }
+        { title: "MERN Stack Web Development", description: "Master React, Node, Express and MongoDB.", price: "25000", duration: "6 Months", category: "programming" },
+        // { title: "Graphic Designing", description: "Learn Photoshop, Illustrator and Canva.", price: "12000", duration: "3 Months", category: "Design" },
+        // { title: "Digital Marketing", description: "SEO, Social Media and Ads masterclass.", price: "15000", duration: "4 Months", category: "Marketing" }
       ];
       await Course.insertMany(defaultCourses);
       console.log("✅ Default courses seeded!");
