@@ -16,7 +16,7 @@ const courseSchema = new mongoose.Schema(
       required: [true, "Category is required"],
       
       enum: {
-        values: ["frontend", "backend", "database", "fullstack", "general","programming",],
+        values: ["frontend", "backend", "database", "fullstack", "general","programming", "design"],
         message: '{VALUE} is not a valid category'
       },
       lowercase: true, 
