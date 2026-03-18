@@ -99,6 +99,11 @@ class QuestionRequest(BaseModel):
 class AnnouncementRequest(BaseModel):
     short_note: str
     audience: str = "students"  # students / teachers / all
+    
+class DoubtRequest(BaseModel):
+    lecture_id: str
+    doubt: str
+    student_name: str = "Student"
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
 def chunk_text(text: str, size: int = 500, overlap: int = 50):
@@ -316,4 +321,55 @@ async def generate_announcement(req: AnnouncementRequest):
 
     except Exception as e:
         logger.error(f"Announcement error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/auto-answer-doubt", dependencies=[Depends(verify_api_key)])
+async def auto_answer_doubt(req: DoubtRequest):
+    """Auto answer student doubt using lecture content via RAG."""
+    try:
+        logger.info(f"Auto answering doubt for lecture {req.lecture_id}")
+
+        q_embed = embedder.encode([req.doubt], show_progress_bar=False).tolist()
+        results = chroma_collection.query(
+            query_embeddings=q_embed,
+            n_results=5,
+            where={"lecture_id": req.lecture_id}
+        )
+
+        context = "\n\n".join(results["documents"][0]) if results and results["documents"] else ""
+
+        if context:
+            answer = call_groq([
+                {"role": "system", "content": (
+                    "You are a helpful tutor assistant for an online LMS. "
+                    "Answer the student's doubt based ONLY on the lecture content provided. "
+                    "Be clear, friendly and educational. "
+                    "If the answer is not in the lecture content, say: "
+                    "'This topic was not covered in the lecture. Please ask your mentor.'"
+                )},
+                {"role": "user", "content": f"Lecture Content:\n{context}\n\nStudent Doubt: {req.doubt}"}
+            ])
+            source = "lecture_content"
+        else:
+            answer = call_groq([
+                {"role": "system", "content": (
+                    "You are a helpful tutor assistant. "
+                    "Answer the student's doubt clearly and educationally. "
+                    "Mention that this is a general answer since no specific lecture content was found."
+                )},
+                {"role": "user", "content": f"Student Doubt: {req.doubt}"}
+            ])
+            source = "general_knowledge"
+
+        return {
+            "success": True,
+            "student_name": req.student_name,
+            "doubt": req.doubt,
+            "answer": answer,
+            "answered_from": source,
+            "lecture_id": req.lecture_id
+        }
+
+    except Exception as e:
+        logger.error(f"Doubt auto-answer error [{req.lecture_id}]: {e}")
         raise HTTPException(status_code=500, detail=str(e))
