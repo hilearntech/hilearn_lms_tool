@@ -1,6 +1,7 @@
 import os
 import logging
 import hashlib
+import json
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Depends, Security
 from fastapi.middleware.cors import CORSMiddleware
@@ -104,6 +105,11 @@ class DoubtRequest(BaseModel):
     lecture_id: str
     doubt: str
     student_name: str = "Student"
+
+# Added by Hanee ✅
+class QuizGenerateRequest(BaseModel):
+    lecture_id: str
+    num_questions: int = 5
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
 def chunk_text(text: str, size: int = 500, overlap: int = 50):
@@ -297,6 +303,7 @@ async def delete_lecture_index(lecture_id: str):
         logger.error(f"Delete error [{lecture_id}]: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @app.post("/generate-announcement", dependencies=[Depends(verify_api_key)])
 async def generate_announcement(req: AnnouncementRequest):
     """Generate a professional announcement from a short note."""
@@ -322,6 +329,7 @@ async def generate_announcement(req: AnnouncementRequest):
     except Exception as e:
         logger.error(f"Announcement error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.post("/auto-answer-doubt", dependencies=[Depends(verify_api_key)])
 async def auto_answer_doubt(req: DoubtRequest):
@@ -372,4 +380,95 @@ async def auto_answer_doubt(req: DoubtRequest):
 
     except Exception as e:
         logger.error(f"Doubt auto-answer error [{req.lecture_id}]: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# auto generate quiz questions from lecture content using Groq
+@app.post("/generate-quiz", dependencies=[Depends(verify_api_key)])
+async def generate_quiz(req: QuizGenerateRequest):
+    """Auto-generate MCQ questions from indexed lecture content using Groq."""
+    try:
+        logger.info(f"Generating {req.num_questions} quiz questions for lecture: {req.lecture_id}")
+
+        # ── Step 1: Fetch indexed lecture content from ChromaDB ──────────────
+        results = chroma_collection.get(where={"lecture_id": req.lecture_id})
+
+        if not results["documents"]:
+            raise HTTPException(
+                status_code=404,
+                detail="Lecture not indexed yet. Please transcribe or index it first."
+            )
+
+        # Combine all chunks into one context block (cap at 4000 chars for prompt safety)
+        context = "\n\n".join(results["documents"])[:4000]
+        title   = results["metadatas"][0].get("title", "Lecture") if results["metadatas"] else "Lecture"
+
+        # ── Step 2: Build prompt and call Groq ───────────────────────────────
+        raw_response = call_groq(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are an expert quiz creator for an online Learning Management System. "
+                        "Generate multiple-choice questions strictly based on the lecture content provided. "
+                        "Each question must have exactly 4 options (A, B, C, D), one correct answer, "
+                        "and a short explanation for why that answer is correct. "
+                        "Return ONLY a valid JSON array — no markdown, no extra text, no code fences."
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": (
+                        f"Lecture Title: {title}\n\n"
+                        f"Lecture Content:\n{context}\n\n"
+                        f"Generate exactly {req.num_questions} MCQ questions in this JSON format:\n"
+                        "[\n"
+                        "  {\n"
+                        '    "question": "Question text here?",\n'
+                        '    "options": {\n'
+                        '      "A": "First option",\n'
+                        '      "B": "Second option",\n'
+                        '      "C": "Third option",\n'
+                        '      "D": "Fourth option"\n'
+                        "    },\n"
+                        '    "correct_answer": "A",\n'
+                        '    "explanation": "Short reason why A is correct."\n'
+                        "  }\n"
+                        "]"
+                    ),
+                },
+            ],
+        )
+
+        # ── Step 3: Parse and validate Groq's JSON response ──────────────────
+        # Strip markdown fences in case the model wraps output anyway
+        cleaned = raw_response.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+
+        try:
+            questions = json.loads(cleaned)
+        except json.JSONDecodeError:
+            logger.error(f"Groq returned invalid JSON for lecture {req.lecture_id}:\n{raw_response}")
+            raise HTTPException(
+                status_code=502,
+                detail="Groq returned malformed JSON. Please try again."
+            )
+
+        if not isinstance(questions, list):
+            raise HTTPException(status_code=502, detail="Unexpected response structure from Groq.")
+
+        logger.info(f"Generated {len(questions)} questions for lecture: {req.lecture_id}")
+
+        return {
+            "success":       True,
+            "lecture_id":    req.lecture_id,
+            "lecture_title": title,
+            "num_questions": len(questions),
+            "questions":     questions,
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Quiz generation error [{req.lecture_id}]: {e}")
         raise HTTPException(status_code=500, detail=str(e))
