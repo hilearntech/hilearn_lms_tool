@@ -24,7 +24,7 @@ const AddQuiz = () => {
   const fetchQuizzes = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/quizzes/all", {
+      const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/quizzes/all", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setQuizzes(res.data.quizzes || res.data || []);
@@ -34,7 +34,7 @@ const AddQuiz = () => {
   const fetchCourses = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/courses", {
+      const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/courses", {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -85,7 +85,7 @@ const AddQuiz = () => {
     if (!window.confirm("Delete this quiz?")) return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/api/quizzes/delete/${id}`, {
+      await axios.delete(`http://https://hilearnlmstool-production.up.railway.app/api/quizzes/delete/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchQuizzes();
@@ -98,8 +98,8 @@ const AddQuiz = () => {
     try {
       const token = localStorage.getItem("token");
       const url = editingId
-        ? `http://localhost:5000/api/quizzes/update/${editingId}`
-        : "http://localhost:5000/api/quizzes/add";
+        ? `http://https://hilearnlmstool-production.up.railway.app/api/quizzes/update/${editingId}`
+        : "http://https://hilearnlmstool-production.up.railway.app/api/quizzes/add";
 
       const res = await axios({
         method: editingId ? 'put' : 'post',

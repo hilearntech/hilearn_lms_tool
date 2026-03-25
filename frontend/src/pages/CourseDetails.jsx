@@ -14,7 +14,7 @@ const CourseDetails = () => {
     try {
       setLoading(true);
       
-      const response = await fetch(`http://localhost:5000/api/courses/${id}`);
+      const response = await fetch(`http://https://hilearnlmstool-production.up.railway.app/api/courses/${id}`);
       const data = await response.json();
       
       if (data.success && data.course) {

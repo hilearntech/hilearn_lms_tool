@@ -10,7 +10,7 @@ const EnquiryList = () => {
     if (window.confirm("Are you sure you want to delete this lead? This action cannot be undone.")) {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.delete(`http://localhost:5000/api/admin/contact/delete/${id}`, {
+        const response = await axios.delete(`http://https://hilearnlmstool-production.up.railway.app/api/admin/contact/delete/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -29,7 +29,7 @@ const EnquiryList = () => {
     const fetchLeads = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:5000/api/admin/contact/leads", {
+        const response = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/admin/contact/leads", {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (response.data.success) {

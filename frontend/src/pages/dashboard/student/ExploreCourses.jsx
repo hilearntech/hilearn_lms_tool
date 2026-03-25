@@ -12,13 +12,13 @@ const ExploreCourses = () => {
       const token = localStorage.getItem("token");
       const headers = token ? { "Authorization": `Bearer ${token}` } : {};
 
-      const res = await fetch("http://localhost:5000/api/courses", {
+      const res = await fetch("http://https://hilearnlmstool-production.up.railway.app/api/courses", {
         method: "GET",
         headers: headers
       });
 
       if (res.status === 401) {
-        const publicRes = await fetch("http://localhost:5000/api/courses");
+        const publicRes = await fetch("http://https://hilearnlmstool-production.up.railway.app/api/courses");
         const publicData = await publicRes.json();
         if (publicData.success) {
           setCourses(publicData.courses);
@@ -52,7 +52,7 @@ const ExploreCourses = () => {
       setProcessingId(course._id);
 
       const res = await axios.post(
-        "http://localhost:5000/api/payments/free-enroll",
+        "http://https://hilearnlmstool-production.up.railway.app/api/payments/free-enroll",
         { courseId: course._id },
         { headers: { Authorization: `Bearer ${token}` } }
       );

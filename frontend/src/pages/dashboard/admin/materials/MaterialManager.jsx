@@ -7,7 +7,7 @@ export default function MaterialManager() {
   const [selectedLecture, setSelectedLecture] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/lectures")
+    fetch("http://https://hilearnlmstool-production.up.railway.app/api/lectures")
       .then(res => res.json())
       .then(data => setLectures(data.lectures || []));
   }, []);

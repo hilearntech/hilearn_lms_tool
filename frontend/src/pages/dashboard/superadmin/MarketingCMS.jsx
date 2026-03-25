@@ -28,7 +28,7 @@ const MarketingCMS = () => {
     const fetchBlogs = async () => {
         setFetching(true);
         try {
-            const res = await axios.get("http://localhost:5000/api/blogs");
+            const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/blogs");
             if (res.data.success) {
                 setBlogs(res.data.blogs);
             }
@@ -42,7 +42,7 @@ const MarketingCMS = () => {
 
     const fetchTestimonials = async () => {
         try {
-            const res = await axios.get("http://localhost:5000/api/testimonials");
+            const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/testimonials");
             if (res.data.success) {
                 setTestimonials(res.data.testimonials);
             }
@@ -61,7 +61,7 @@ const MarketingCMS = () => {
         if (window.confirm("Are you sure you want to delete this blog?")) {
             try {
                 const token = localStorage.getItem("token");
-                const res = await axios.delete(`http://localhost:5000/api/blogs/${id}`, {
+                const res = await axios.delete(`http://https://hilearnlmstool-production.up.railway.app/api/blogs/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (res.data.success) {
@@ -79,7 +79,7 @@ const MarketingCMS = () => {
         if (window.confirm("Delete this testimonial?")) {
             try {
                 const token = localStorage.getItem("token");
-                await axios.delete(`http://localhost:5000/api/testimonials/${id}`, {
+                await axios.delete(`http://https://hilearnlmstool-production.up.railway.app/api/testimonials/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 alert("🗑️ Testimonial Removed!");
@@ -96,7 +96,7 @@ const MarketingCMS = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem("token");
-            const res = await axios.post("http://localhost:5000/api/blogs", blogData, {
+            const res = await axios.post("http://https://hilearnlmstool-production.up.railway.app/api/blogs", blogData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -125,7 +125,7 @@ const MarketingCMS = () => {
         setTestiLoading(true);
         try {
             const token = localStorage.getItem("token");
-            const res = await axios.post("http://localhost:5000/api/testimonials", testimonialData, {
+            const res = await axios.post("http://https://hilearnlmstool-production.up.railway.app/api/testimonials", testimonialData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

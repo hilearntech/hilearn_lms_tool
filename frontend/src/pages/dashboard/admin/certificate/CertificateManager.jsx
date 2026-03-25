@@ -14,7 +14,7 @@ const CertificateManager = () => {
     const fetchStudentData = async () => {
         try {
             const token = localStorage.getItem("token");
-            const res = await axios.get("http://localhost:5000/api/admin/students-list", {
+            const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/admin/students-list", {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setStudents(res.data.data);
@@ -24,7 +24,7 @@ const CertificateManager = () => {
     const handleIssueCert = async () => {
         try {
             const token = localStorage.getItem("token");
-            await axios.post("http://localhost:5000/api/admin/issue-certificate", {
+            await axios.post("http://https://hilearnlmstool-production.up.railway.app/api/admin/issue-certificate", {
                 studentId: selectedStudent._id,
                 courseId: selectedStudent.enrolledCourses[0]?._id,
                 title: certData.title,

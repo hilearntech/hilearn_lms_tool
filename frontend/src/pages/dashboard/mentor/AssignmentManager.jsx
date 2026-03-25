@@ -21,8 +21,8 @@ const AssignmentManager = () => {
     try {
       const token = localStorage.getItem("token");
       const [assignRes, lectureRes] = await Promise.all([
-        axios.get("http://localhost:5000/api/mentor/assignments", { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get("http://localhost:5000/api/mentor/my-lectures", { headers: { Authorization: `Bearer ${token}` } })
+        axios.get("http://https://hilearnlmstool-production.up.railway.app/api/mentor/assignments", { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get("http://https://hilearnlmstool-production.up.railway.app/api/mentor/my-lectures", { headers: { Authorization: `Bearer ${token}` } })
       ]);
       setAssignments(assignRes.data.data);
       const uniqueCourses = Array.from(new Set(lectureRes.data.lectures.map(l => JSON.stringify(l.course))));
@@ -61,9 +61,9 @@ const AssignmentManager = () => {
       const config = { headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" } };
 
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/mentor/update-assignment/${editingId}`, data, config);
+        await axios.put(`http://https://hilearnlmstool-production.up.railway.app/api/mentor/update-assignment/${editingId}`, data, config);
       } else {
-        await axios.post("http://localhost:5000/api/mentor/create-assignment", data, config);
+        await axios.post("http://https://hilearnlmstool-production.up.railway.app/api/mentor/create-assignment", data, config);
       }
 
       resetForm();
@@ -97,7 +97,7 @@ const AssignmentManager = () => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.post("http://localhost:5000/api/mentor/evaluate-assignment", {
+      await axios.post("http://https://hilearnlmstool-production.up.railway.app/api/mentor/evaluate-assignment", {
         assignmentId, studentId, grade: data.grade, feedback: data.feedback || ""
       }, { headers: { Authorization: `Bearer ${token}` } });
       alert("Saved!");
@@ -109,7 +109,7 @@ const AssignmentManager = () => {
     if (window.confirm("Delete this assignment?")) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`http://localhost:5000/api/mentor/delete-assignment/${id}`, {
+        await axios.delete(`http://https://hilearnlmstool-production.up.railway.app/api/mentor/delete-assignment/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         fetchData();
@@ -290,7 +290,7 @@ const AssignmentManager = () => {
 
               {viewingAssignment.image && (
                 <div className="rounded-[24px] overflow-hidden border-4 border-white shadow-lg">
-                  <img src={`http://localhost:5000${viewingAssignment.image}`} className="w-full h-auto max-h-72 object-contain bg-white" alt="reference" />
+                  <img src={`http://https://hilearnlmstool-production.up.railway.app${viewingAssignment.image}`} className="w-full h-auto max-h-72 object-contain bg-white" alt="reference" />
                 </div>
               )}
 

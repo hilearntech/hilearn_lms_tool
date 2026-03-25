@@ -12,7 +12,7 @@ const EnrollmentModal = ({ course, onClose, onEnrollSuccess }) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const { data } = await axios.post("http://localhost:5000/api/auth/send-otp", {
+      const { data } = await axios.post("http://https://hilearnlmstool-production.up.railway.app/api/auth/send-otp", {
         email: formData.email,
         type: "signup"
       });
@@ -42,7 +42,7 @@ const EnrollmentModal = ({ course, onClose, onEnrollSuccess }) => {
   const handleFinalPayment = async () => {
     setIsLoading(true);
     try {
-      const { data } = await axios.post("http://localhost:5000/api/auth/quick-enroll", {
+      const { data } = await axios.post("http://https://hilearnlmstool-production.up.railway.app/api/auth/quick-enroll", {
         name: formData.name,
         email: formData.email,
         password: formData.password,

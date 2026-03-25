@@ -61,13 +61,13 @@ const LoginLandingPage = () => {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const blogRes = await axios.get("http://localhost:5000/api/blogs");
+        const blogRes = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/blogs");
         if (blogRes.data.success && blogRes.data.blogs.length > 0) setBlogs(blogRes.data.blogs);
       } catch (err) { console.error("Blog fallback used"); }
       finally { setLoadingBlogs(false); }
 
       try {
-        const testRes = await axios.get("http://localhost:5000/api/testimonials");
+        const testRes = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/testimonials");
         if (testRes.data.success && testRes.data.testimonials.length > 0) setDbTestimonials(testRes.data.testimonials);
       } catch (err) { console.error("Testimonial fallback used"); }
       finally { setLoadingTestimonials(false); }
@@ -132,7 +132,7 @@ const LoginLandingPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/api/admin/contact/submit", formData);
+      const response = await axios.post("http://https://hilearnlmstool-production.up.railway.app/api/admin/contact/submit", formData);
       if (response.data.success) {
         alert("Success! Your message has been sent.");
         setFormData({ name: "", email: "", phone: "", course: "", message: "" });

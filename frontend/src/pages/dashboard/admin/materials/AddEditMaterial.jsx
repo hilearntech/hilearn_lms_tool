@@ -20,7 +20,7 @@ const AddEditMaterial = ({ lecture, refresh, onClose }) => {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/materials/upload", {
+      const res = await fetch("http://https://hilearnlmstool-production.up.railway.app/api/materials/upload", {
         method: "POST",
         headers: { "Authorization": `Bearer ${token}` },
         body: formData,

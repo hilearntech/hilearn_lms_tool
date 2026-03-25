@@ -16,7 +16,7 @@ const ManageAttendance = () => {
     setFetching(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/mentor/my-assigned-lectures", {
+      const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/mentor/my-assigned-lectures", {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) setLectures(res.data.lectures);
@@ -36,7 +36,7 @@ const ManageAttendance = () => {
       setFiltering(true);
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get(`http://localhost:5000/api/attendance/filtered-students/${selectedLecture}`, {
+        const res = await axios.get(`http://https://hilearnlmstool-production.up.railway.app/api/attendance/filtered-students/${selectedLecture}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.data.success) {
@@ -65,7 +65,7 @@ const ManageAttendance = () => {
         status: attendance[s._id] || "absent"
       }));
 
-      await axios.post("http://localhost:5000/api/attendance/bulk",
+      await axios.post("http://https://hilearnlmstool-production.up.railway.app/api/attendance/bulk",
         { lectureId: selectedLecture, attendanceData: data },
         { headers: { Authorization: `Bearer ${token}` } }
       );

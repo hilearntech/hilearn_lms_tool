@@ -35,7 +35,7 @@ const MyLectures = () => {
       if (!token) return;
 
 
-      const res = await axios.get("http://localhost:5000/api/students/lectures", {
+      const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/students/lectures", {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
@@ -43,7 +43,7 @@ const MyLectures = () => {
       }
 
 
-      const dashRes = await axios.get("http://localhost:5000/api/students/dashboard", {
+      const dashRes = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/students/dashboard", {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -62,7 +62,7 @@ const MyLectures = () => {
   const handleMarkComplete = async (lectureId) => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/students/complete-lecture",
+        "http://https://hilearnlmstool-production.up.railway.app/api/students/complete-lecture",
         { lectureId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -88,7 +88,7 @@ const MyLectures = () => {
     setSelectedVideo(finalUrl);
 
     axios.post(
-      "http://localhost:5000/api/students/update-access",
+      "http://https://hilearnlmstool-production.up.railway.app/api/students/update-access",
       { lectureId },
       { headers: { Authorization: `Bearer ${token}` } }
     ).catch(e => console.error(e));
@@ -99,7 +99,7 @@ const MyLectures = () => {
     setActiveLectureTitle(title);
     setShowMaterials(true);
     try {
-      const res = await axios.get(`http://localhost:5000/api/materials/${lectureId}`);
+      const res = await axios.get(`http://https://hilearnlmstool-production.up.railway.app/api/materials/${lectureId}`);
       setCurrentMaterials(res.data.success ? res.data.materials : []);
     } catch (err) {
       setCurrentMaterials([]);
@@ -231,7 +231,7 @@ const MyLectures = () => {
                       <span className="text-sm font-bold text-slate-700">{file.title}</span>
                     </div>
                     <a
-                      href={`http://localhost:5000/api/materials/download/${file._id}`}
+                      href={`http://https://hilearnlmstool-production.up.railway.app/api/materials/download/${file._id}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-2 text-emerald-600 hover:bg-white rounded-xl transition-colors shadow-sm"

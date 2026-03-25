@@ -27,7 +27,7 @@ const MentorProfile = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
-        "http://localhost:5000/api/admin/faculties/complete-setup", 
+        "http://https://hilearnlmstool-production.up.railway.app/api/admin/faculties/complete-setup", 
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );

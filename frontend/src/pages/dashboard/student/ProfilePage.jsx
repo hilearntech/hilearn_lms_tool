@@ -25,7 +25,7 @@ const ProfilePage = () => {
     if (!token) return;
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:5000/api/students/notifications", {
+      const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/students/notifications", {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
@@ -44,7 +44,7 @@ const ProfilePage = () => {
   const markAllAsRead = async () => {
     if (unreadCount === 0) return; 
     try {
-      await axios.put("http://localhost:5000/api/students/notifications/mark-as-read", {}, {
+      await axios.put("http://https://hilearnlmstool-production.up.railway.app/api/students/notifications/mark-as-read", {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       

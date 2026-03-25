@@ -10,7 +10,7 @@ const AdminDashboard = () => {
     const fetchStats = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/api/admin/stats", {
+        const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/admin/stats", {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.data.success) setStats(res.data.stats);

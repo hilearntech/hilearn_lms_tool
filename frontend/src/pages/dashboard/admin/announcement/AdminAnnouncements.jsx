@@ -12,7 +12,7 @@ const AdminAnnouncements = () => {
   const fetchAnnouncements = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/admin/announcements", {
+      const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/admin/announcements", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAnnouncements(res.data.announcements || []);
@@ -31,7 +31,7 @@ const AdminAnnouncements = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
-        "http://localhost:5000/api/admin/announcement", 
+        "http://https://hilearnlmstool-production.up.railway.app/api/admin/announcement", 
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -51,7 +51,7 @@ const AdminAnnouncements = () => {
     if (!window.confirm("Are you sure you want to delete this?")) return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/api/admin/announcement/${id}`, {
+      await axios.delete(`http://https://hilearnlmstool-production.up.railway.app/api/admin/announcement/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchAnnouncements();

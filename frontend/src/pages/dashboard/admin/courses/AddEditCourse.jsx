@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { BookOpen, Clock, Tag, IndianRupee, FileText, XCircle, Send, Layers, Star, Users, CheckCircle } from "lucide-react";
 
-const API_URL = "http://localhost:5000/api/courses";
+const API_URL = "http://https://hilearnlmstool-production.up.railway.app/api/courses";
 
 const AddEditCourse = ({ onCoursesChange, editData, clearEdit }) => {
   const initialState = {

@@ -10,7 +10,7 @@ const MentorMyProfile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/api/mentor/profile", {
+        const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/mentor/profile", {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.data.success) {

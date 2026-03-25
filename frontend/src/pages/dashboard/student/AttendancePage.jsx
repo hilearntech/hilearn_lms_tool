@@ -12,7 +12,7 @@ const AttendancePage = () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/api/students/my-attendance", {
+        const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/students/my-attendance", {
           headers: { Authorization: `Bearer ${token}` }
         });
 

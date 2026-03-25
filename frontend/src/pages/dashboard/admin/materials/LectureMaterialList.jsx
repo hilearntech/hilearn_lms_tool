@@ -4,7 +4,7 @@ export default function LectureMaterialList({ lectureId }) {
   const [materials, setMaterials] = useState([]);
 
   const load = () => {
-    fetch(`http://localhost:5000/api/materials/lecture/${lectureId}`)
+    fetch(`http://https://hilearnlmstool-production.up.railway.app/api/materials/lecture/${lectureId}`)
       .then(res => res.json())
       .then(data => setMaterials(data.materials || []));
   };
@@ -12,7 +12,7 @@ export default function LectureMaterialList({ lectureId }) {
   useEffect(load, [lectureId]);
 
   const remove = async (id) => {
-    await fetch(`http://localhost:5000/api/materials/${id}`, { method:"DELETE" });
+    await fetch(`http://https://hilearnlmstool-production.up.railway.app/api/materials/${id}`, { method:"DELETE" });
     load();
   };
 
