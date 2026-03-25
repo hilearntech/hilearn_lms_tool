@@ -11,7 +11,7 @@ const StudentPerformance = () => {
     const fetchPerformance = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/mentor/student-performance", {
+        const res = await axios.get("https://hilearnlmstool-production.up.railway.app/api/mentor/student-performance", {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.data.success) {

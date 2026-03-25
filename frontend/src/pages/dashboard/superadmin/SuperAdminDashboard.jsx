@@ -16,7 +16,7 @@ const SuperAdminDashboard = () => {
     const fetchAdminStats = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/admin/super-stats", {
+        const res = await axios.get("https://hilearnlmstool-production.up.railway.app/api/admin/super-stats", {
           headers: { Authorization: `Bearer ${token}` }
         });
 

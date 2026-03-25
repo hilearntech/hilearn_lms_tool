@@ -3,7 +3,7 @@ import { Clock, Search, Plus, X, Play, FolderOpen, Edit3, Trash2, Video, Radio, 
 import AddEditLecture from "./AddEditLecture";
 import AddMaterialModal from "./AddMaterialModal";
 
-const API = "http://https://hilearnlmstool-production.up.railway.app/api/lectures";
+const API = "https://hilearnlmstool-production.up.railway.app/api/lectures";
 
 const LectureList = () => {
   const [lectures, setLectures] = useState([]);

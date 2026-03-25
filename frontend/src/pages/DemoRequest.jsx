@@ -18,11 +18,11 @@ const DemoRequest = () => {
   const [hover, setHover] = useState(0);
 
   useEffect(() => {
-    fetch(`http://https://hilearnlmstool-production.up.railway.app/api/courses/${id}`)
+    fetch(`https://hilearnlmstool-production.up.railway.app/api/courses/${id}`)
       .then((res) => res.json())
       .then((data) => { if (data.success) setCourse(data.course); });
 
-    fetch(`http://https://hilearnlmstool-production.up.railway.app/api/students/course/${id}/demo`)
+    fetch(`https://hilearnlmstool-production.up.railway.app/api/students/course/${id}/demo`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.demoVideo) setDemoVideo(data.demoVideo);
@@ -33,7 +33,7 @@ const DemoRequest = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            const response = await fetch("http://https://hilearnlmstool-production.up.railway.app/api/admin/demo-request", {
+            const response = await fetch("https://hilearnlmstool-production.up.railway.app/api/admin/demo-request", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ ...formData, courseTitle: course?.title }),
@@ -60,7 +60,7 @@ const handleReviewSubmit = async () => {
   }
 
   try {
-    const res = await fetch("http://https://hilearnlmstool-production.up.railway.app/api/admin/update-rating", {
+    const res = await fetch("https://hilearnlmstool-production.up.railway.app/api/admin/update-rating", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ contactId, rating }), 

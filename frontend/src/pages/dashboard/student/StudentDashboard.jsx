@@ -27,7 +27,7 @@ const StudentDashboard = () => {
     const fetchDashboardData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/students/dashboard", {
+        const res = await axios.get("https://hilearnlmstool-production.up.railway.app/api/students/dashboard", {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -83,7 +83,7 @@ const StudentDashboard = () => {
   const handleMarkComplete = async (lectureId) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.post("http://https://hilearnlmstool-production.up.railway.app/api/students/complete-lecture",
+      const res = await axios.post("https://hilearnlmstool-production.up.railway.app/api/students/complete-lecture",
         { lectureId },
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -10,7 +10,7 @@ const MentorSchedule = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/mentor/my-lectures", {
+      const res = await axios.get("https://hilearnlmstool-production.up.railway.app/api/mentor/my-lectures", {
         headers: { "Authorization": `Bearer ${token}` }
       });
 

@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  // baseURL: "http://https://hilearnlmstool-production.up.railway.app/api",
-  baseURL: import.meta.env.VITE_API_URL || "http://https://hilearnlmstool-production.up.railway.app/api",
+  // baseURL: "https://hilearnlmstool-production.up.railway.app/api",
+  baseURL: import.meta.env.VITE_API_URL || "https://hilearnlmstool-production.up.railway.app/api",
 });
 
 // token auto attach

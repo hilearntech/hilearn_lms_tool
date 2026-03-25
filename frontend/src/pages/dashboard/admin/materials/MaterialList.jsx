@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import AddEditMaterial from "./AddEditMaterial";
 
-const API = "http://https://hilearnlmstool-production.up.railway.app/api/materials";
+const API = "https://hilearnlmstool-production.up.railway.app/api/materials";
 
 const MaterialList = ({ lectureId }) => {
   const [materials, setMaterials] = useState([]);

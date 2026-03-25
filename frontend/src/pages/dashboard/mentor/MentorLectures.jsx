@@ -5,7 +5,7 @@ import { Clock, Play, FolderOpen, Radio, Loader2, Calendar, X, Plus } from "luci
 import AddEditLecture from "../admin/lectures/AddEditLecture";
 import AddMaterialModal from "../admin/materials/AddEditMaterial";
 
-const API = "http://https://hilearnlmstool-production.up.railway.app/api/mentor/my-lectures";
+const API = "https://hilearnlmstool-production.up.railway.app/api/mentor/my-lectures";
 
 const MentorLectures = () => {
   const [searchParams] = useSearchParams();
@@ -53,7 +53,7 @@ const MentorLectures = () => {
 
   const handleStartClass = async (lectureId) => {
     try {
-      const response = await axios.post(`http://https://hilearnlmstool-production.up.railway.app/api/zoom/start-meeting/${lectureId}`);
+      const response = await axios.post(`https://hilearnlmstool-production.up.railway.app/api/zoom/start-meeting/${lectureId}`);
       if (response.data.start_url) {
         window.open(response.data.start_url, "_blank");
         setLectures(prev => prev.map(l =>
@@ -68,7 +68,7 @@ const MentorLectures = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this lecture?")) {
       const token = localStorage.getItem("token");
-      await fetch(`http://https://hilearnlmstool-production.up.railway.app/api/lectures/${id}`, {
+      await fetch(`https://hilearnlmstool-production.up.railway.app/api/lectures/${id}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` }
       });

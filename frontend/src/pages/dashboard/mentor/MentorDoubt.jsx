@@ -25,7 +25,7 @@ const MentorDoubt = () => {
   const fetchDoubts = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/doubts/mentor-list", {
+      const res = await axios.get("https://hilearnlmstool-production.up.railway.app/api/doubts/mentor-list", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setDoubts(res.data.doubts);
@@ -48,7 +48,7 @@ const MentorDoubt = () => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.put("http://https://hilearnlmstool-production.up.railway.app/api/doubts/resolve", formData, {
+      await axios.put("https://hilearnlmstool-production.up.railway.app/api/doubts/resolve", formData, {
         headers: { 
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data" 
@@ -158,14 +158,14 @@ const MentorDoubt = () => {
                   {selectedDoubt.image && (
                     <div className="flex items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200 w-fit">
                       <img 
-                        src={`http://https://hilearnlmstool-production.up.railway.app${selectedDoubt.image}`} 
+                        src={`https://hilearnlmstool-production.up.railway.app${selectedDoubt.image}`} 
                         className="w-16 h-16 object-cover rounded-xl border-2 border-slate-50 shadow-sm" 
                         alt="student-attachment" 
                       />
                       <div>
                         <p className="text-[10px] font-black text-slate-500 uppercase tracking-tight">Student Attachment</p>
                         <a 
-                          href={`http://https://hilearnlmstool-production.up.railway.app${selectedDoubt.image}`} 
+                          href={`https://hilearnlmstool-production.up.railway.app${selectedDoubt.image}`} 
                           target="_blank" 
                           rel="noreferrer" 
                           className="text-[11px] text-emerald-600 font-black uppercase hover:underline flex items-center gap-1 mt-1"

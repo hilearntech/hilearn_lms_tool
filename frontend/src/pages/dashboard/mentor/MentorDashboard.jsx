@@ -11,13 +11,13 @@ const MentorDashboard = () => {
     const fetchMentorData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/mentor/stats", {
+        const res = await axios.get("https://hilearnlmstool-production.up.railway.app/api/mentor/stats", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setStats(res.data.stats);
 
         // Fetch lectures for dashboard preview
-        const lecRes = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/mentor/my-lectures", {
+        const lecRes = await axios.get("https://hilearnlmstool-production.up.railway.app/api/mentor/my-lectures", {
           headers: { Authorization: `Bearer ${token}` }
         });
 

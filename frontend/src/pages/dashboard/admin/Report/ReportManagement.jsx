@@ -17,7 +17,7 @@ const ReportManagement = () => {
   const fetchReports = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/admin/reports-data", {
+      const res = await axios.get("https://hilearnlmstool-production.up.railway.app/api/admin/reports-data", {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) setData(res.data);

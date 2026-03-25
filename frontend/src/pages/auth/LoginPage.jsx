@@ -56,9 +56,9 @@ const Login = () => {
     }
   };
 
-  const handleGoogleLogin = () => { window.location.href = "http://https://hilearnlmstool-production.up.railway.app/api/auth/google"; };
-  const handleGithubLogin = () => { window.location.href = "http://https://hilearnlmstool-production.up.railway.app/api/auth/github"; };
-  const handleFacebookLogin = () => { window.location.href = "http://https://hilearnlmstool-production.up.railway.app/api/auth/facebook"; };
+  const handleGoogleLogin = () => { window.location.href = "https://hilearnlmstool-production.up.railway.app/api/auth/google"; };
+  const handleGithubLogin = () => { window.location.href = "https://hilearnlmstool-production.up.railway.app/api/auth/github"; };
+  const handleFacebookLogin = () => { window.location.href = "https://hilearnlmstool-production.up.railway.app/api/auth/facebook"; };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">

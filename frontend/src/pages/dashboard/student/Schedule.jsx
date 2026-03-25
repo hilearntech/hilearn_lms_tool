@@ -24,7 +24,7 @@ const Schedule = () => {
         setLoading(true);
         const token = localStorage.getItem("token");
 
-        const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/students/lectures", {
+        const res = await axios.get("https://hilearnlmstool-production.up.railway.app/api/students/lectures", {
           headers: {
             Authorization: `Bearer ${token}`
           }

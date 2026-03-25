@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { X, Upload, FileText } from "lucide-react";
 
-const API = "http://https://hilearnlmstool-production.up.railway.app/api/materials/upload";
+const API = "https://hilearnlmstool-production.up.railway.app/api/materials/upload";
 
 export default function AddMaterialModal({ lecture, onClose }) {
   const [file, setFile] = useState(null);

@@ -10,7 +10,7 @@ const MentorCourses = () => {
       try {
         const token = localStorage.getItem("token");
         
-        const res = await fetch("http://https://hilearnlmstool-production.up.railway.app/api/mentor/my-courses", {
+        const res = await fetch("https://hilearnlmstool-production.up.railway.app/api/mentor/my-courses", {
           headers: { "Authorization": `Bearer ${token}` }
         });
         const data = await res.json();

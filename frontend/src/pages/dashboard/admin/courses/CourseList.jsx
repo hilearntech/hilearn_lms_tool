@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Clock, Users, Star, CheckCircle2, Search, Plus, X, IndianRupee, Trash2, Edit3 } from "lucide-react";
 import AddEditCourse from "./AddEditCourse";
 
-const API_URL = "http://https://hilearnlmstool-production.up.railway.app/api/courses";
+const API_URL = "https://hilearnlmstool-production.up.railway.app/api/courses";
 
 const CourseList = () => {
   const [courses, setCourses] = useState([]);

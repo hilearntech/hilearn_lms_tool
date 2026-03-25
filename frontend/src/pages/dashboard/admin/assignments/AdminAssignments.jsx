@@ -16,7 +16,7 @@ const AdminAssignments = () => {
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/admin/assignments-report", {
+      const res = await axios.get("https://hilearnlmstool-production.up.railway.app/api/admin/assignments-report", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAssignments(Array.isArray(res.data.data) ? res.data.data : []);
@@ -31,7 +31,7 @@ const AdminAssignments = () => {
     if (window.confirm("Are you sure? This will delete the assignment!")) {
       try {
         const token = localStorage.getItem("token");
-        await axios.delete(`http://https://hilearnlmstool-production.up.railway.app/api/admin/delete-assignment/${id}`, {
+        await axios.delete(`https://hilearnlmstool-production.up.railway.app/api/admin/delete-assignment/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         fetchData(); 
@@ -45,7 +45,7 @@ const AdminAssignments = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await axios.put(`http://https://hilearnlmstool-production.up.railway.app/api/admin/update-assignment/${editAssign._id}`, 
+      await axios.put(`https://hilearnlmstool-production.up.railway.app/api/admin/update-assignment/${editAssign._id}`, 
         { title: editAssign.title, description: editAssign.description },
         { headers: { Authorization: `Bearer ${token}` } }
       );

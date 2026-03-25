@@ -173,7 +173,7 @@ const CoursesPage = () => {
   const fetchCourses = async () => {
 
     try {
-      const response = await fetch("http://https://hilearnlmstool-production.up.railway.app/api/courses");
+      const response = await fetch("https://hilearnlmstool-production.up.railway.app/api/courses");
       const data = await response.json();
       if (data.success) {
         setCourses(data.courses);

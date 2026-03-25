@@ -26,7 +26,7 @@ const StudentLayout = () => {
   const fetchUnreadCount = async () => {
     if (!token) return;
     try {
-      const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/students/notifications/unread-count", {
+      const res = await axios.get("https://hilearnlmstool-production.up.railway.app/api/students/notifications/unread-count", {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {

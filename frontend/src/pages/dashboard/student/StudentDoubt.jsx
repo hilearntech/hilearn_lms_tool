@@ -26,7 +26,7 @@ const StudentDoubt = () => {
   const fetchUserData = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/auth/me", {
+      const res = await axios.get("https://hilearnlmstool-production.up.railway.app/api/auth/me", {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success && res.data.user.enrolledCourses) {
@@ -42,7 +42,7 @@ const StudentDoubt = () => {
   const fetchMyDoubts = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/doubts/my-doubts", {
+      const res = await axios.get("https://hilearnlmstool-production.up.railway.app/api/doubts/my-doubts", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMyDoubts(res.data.doubts);
@@ -57,7 +57,7 @@ const StudentDoubt = () => {
     if (!window.confirm("Are you sure you want to permanently delete this inquiry?")) return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://https://hilearnlmstool-production.up.railway.app/api/doubts/delete/${id}`, {
+      await axios.delete(`https://hilearnlmstool-production.up.railway.app/api/doubts/delete/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMyDoubts(myDoubts.filter(d => d._id !== id));
@@ -85,7 +85,7 @@ const StudentDoubt = () => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.post("http://https://hilearnlmstool-production.up.railway.app/api/doubts/create", formData, {
+      await axios.post("https://hilearnlmstool-production.up.railway.app/api/doubts/create", formData, {
         headers: { 
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data" 
@@ -220,13 +220,13 @@ const StudentDoubt = () => {
                   {d.image && (
                     <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200 w-fit self-start md:self-center">
                       <img 
-                        src={`http://https://hilearnlmstool-production.up.railway.app${d.image}`} 
+                        src={`https://hilearnlmstool-production.up.railway.app${d.image}`} 
                         className="w-14 h-14 object-cover rounded-xl border-2 border-white shadow-sm" 
                         alt="question" 
                       />
                       <div>
                         <p className="text-[10px] font-black text-slate-500 uppercase tracking-tight">Your Attachment</p>
-                        <a href={`http://https://hilearnlmstool-production.up.railway.app${d.image}`} target="_blank" rel="noreferrer" className="text-[10px] text-emerald-600 font-black uppercase hover:underline flex items-center gap-1 mt-0.5">
+                        <a href={`https://hilearnlmstool-production.up.railway.app${d.image}`} target="_blank" rel="noreferrer" className="text-[10px] text-emerald-600 font-black uppercase hover:underline flex items-center gap-1 mt-0.5">
                           View Image <ExternalLink size={11}/>
                         </a>
                       </div>
@@ -246,13 +246,13 @@ const StudentDoubt = () => {
                     {d.answerImage && (
                       <div className="flex items-center gap-3 bg-white p-3 rounded-2xl border border-emerald-100 w-fit">
                           <img 
-                            src={`http://https://hilearnlmstool-production.up.railway.app${d.answerImage}`} 
+                            src={`https://hilearnlmstool-production.up.railway.app${d.answerImage}`} 
                             className="w-14 h-14 object-cover rounded-xl border-2 border-emerald-50 shadow-sm" 
                             alt="solution" 
                           />
                           <div>
                             <p className="text-[10px] font-black text-emerald-700 uppercase tracking-tight">Mentor Attachment</p>
-                            <a href={`http://https://hilearnlmstool-production.up.railway.app${d.answerImage}`} target="_blank" rel="noreferrer" className="text-[10px] text-emerald-600 font-black uppercase hover:underline flex items-center gap-1 mt-0.5">
+                            <a href={`https://hilearnlmstool-production.up.railway.app${d.answerImage}`} target="_blank" rel="noreferrer" className="text-[10px] text-emerald-600 font-black uppercase hover:underline flex items-center gap-1 mt-0.5">
                               View Full Image <ExternalLink size={11}/>
                             </a>
                           </div>

@@ -20,7 +20,7 @@ const ZoomMeeting = ({ meetingDetails, user, onClose }) => {
 
     try {
 
-      const response = await fetch('http://https://hilearnlmstool-production.up.railway.app/api/zoom/signature', {
+      const response = await fetch('https://hilearnlmstool-production.up.railway.app/api/zoom/signature', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

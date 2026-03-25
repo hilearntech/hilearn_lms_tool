@@ -19,7 +19,7 @@ const StudentAssignments = () => {
   const fetchAssignments = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/student/my-assignments", {
+      const res = await axios.get("https://hilearnlmstool-production.up.railway.app/api/student/my-assignments", {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) setAssignments(res.data.data);
@@ -37,7 +37,7 @@ const StudentAssignments = () => {
     if (!submissionLink) return alert("Please paste a link first!");
     try {
       const token = localStorage.getItem("token");
-      await axios.post("http://https://hilearnlmstool-production.up.railway.app/api/student/submit-assignment", 
+      await axios.post("https://hilearnlmstool-production.up.railway.app/api/student/submit-assignment", 
         { assignmentId, submissionLink },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -114,9 +114,9 @@ const StudentAssignments = () => {
                   {/* NEW: IMAGE PREVIEW ADDED HERE */}
                   {assign.image && (
                     <div className="relative mt-3 mb-4 w-48 h-28 rounded-xl overflow-hidden border border-slate-100 group/img cursor-pointer shadow-sm"
-                         onClick={() => window.open(`http://https://hilearnlmstool-production.up.railway.app${assign.image}`, '_blank')}>
+                         onClick={() => window.open(`https://hilearnlmstool-production.up.railway.app${assign.image}`, '_blank')}>
                       <img 
-                        src={`http://https://hilearnlmstool-production.up.railway.app${assign.image}`} 
+                        src={`https://hilearnlmstool-production.up.railway.app${assign.image}`} 
                         alt="Task Preview" 
                         className="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-500"
                       />

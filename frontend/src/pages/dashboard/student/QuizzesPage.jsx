@@ -19,7 +19,7 @@ const QuizzesPage = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://https://hilearnlmstool-production.up.railway.app/api/quizzes/all", {
+      const res = await axios.get("https://hilearnlmstool-production.up.railway.app/api/quizzes/all", {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -76,7 +76,7 @@ const QuizzesPage = () => {
         answers: finalAnswers
       };
 
-      const res = await axios.post("http://https://hilearnlmstool-production.up.railway.app/api/quizzes/submit", payload, {
+      const res = await axios.post("https://hilearnlmstool-production.up.railway.app/api/quizzes/submit", payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

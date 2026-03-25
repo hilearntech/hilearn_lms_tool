@@ -9,7 +9,7 @@ useEffect(() => {
   const fetchMyCourses = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://https://hilearnlmstool-production.up.railway.app/api/students/dashboard", {
+      const res = await fetch("https://hilearnlmstool-production.up.railway.app/api/students/dashboard", {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await res.json();

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Send, LayoutGrid, Type, Link, Clock, AlignLeft, Layers, Calendar, VideoIcon, User } from "lucide-react";
 
-const API = "http://https://hilearnlmstool-production.up.railway.app/api";
+const API = "https://hilearnlmstool-production.up.railway.app/api";
 
 const AddEditLecture = ({ refreshLectures, editData, clearEdit }) => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -29,7 +29,7 @@ const AddEditLecture = ({ refreshLectures, editData, clearEdit }) => {
       .catch(err => console.error("Course fetch error:", err));
 
     const courseFetchUrl = isMentor
-      ? `http://https://hilearnlmstool-production.up.railway.app/api/mentor/my-courses`
+      ? `https://hilearnlmstool-production.up.railway.app/api/mentor/my-courses`
       : `${API}/courses`;
 
     fetch(courseFetchUrl, {
