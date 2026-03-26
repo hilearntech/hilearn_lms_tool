@@ -1,4 +1,43 @@
-@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#root {
+  width: 100%;
+  max-width: 100vw;
+  min-height: 100vh; /* instead of height: 100vh */
+  overflow-x: hidden; /* remove overflow:hidden */
+}
+/* #root {
+  width: 100%;
+  max-width: 100vw;
+  min-height: 100vh;
+} */
+.razorpay-container {
+  min-width: 0 !important;
+  width: 0 !important;
+  display: none !important;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+ html, body {
+  height: 100%;
+  /* overflow: hidden; */
+  max-width: 100%;
+  min-width: 0 !important;
+}
+
+/* html, body {
+  height: 100%;
+  overflow-x: hidden;
+} */
+
+
 
 .input {
   background-color: #0f172a;
