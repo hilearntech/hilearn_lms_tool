@@ -126,100 +126,223 @@ const MentorLectures = () => {
   );
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-8 bg-slate-50 min-h-screen">
+    // <div className="max-w-7xl mx-auto p-4 md:p-8 bg-slate-50 min-h-screen">
+    //   {/* Back Button */}
+    //   {courseId && (
+    //     <button 
+    //       onClick={() => navigate("/mentor/courses")}
+    //       className="mb-6 group flex items-center gap-3 bg-[#059669] text-white px-5 py-2.5 rounded-2xl font-black text-xs uppercase tracking-wider hover:bg-[#047857] transition-all duration-300 shadow-lg shadow-emerald-200/50 border-2 border-[#059669]"
+    //     >
+    //       <div className="bg-white/20 rounded-lg p-1 group-hover:-translate-x-1 transition-transform">
+    //         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    //           <path d="M19 12H5M12 19l-7-7 7-7"/>
+    //         </svg>
+    //       </div>
+    //       Back to All Courses
+    //     </button>
+    //   )}
+
+    //   {/* Header Section */}
+    //   <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+    //     <div>
+    //       <h1 className="text-3xl font-black text-slate-800 tracking-tight">My Class Schedule</h1>
+    //       <p className="text-[#059669] text-sm font-bold uppercase tracking-widest mt-1">Manage sessions & content</p>
+    //     </div>
+
+    //     {/* Toggle Button: Create / Close */}
+    //     <button 
+    //       onClick={() => isFormOpen ? handleCloseForm() : setIsFormOpen(true)} 
+    //       className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all duration-300 shadow-lg active:scale-95 border-2 ${
+    //         isFormOpen 
+    //         ? "bg-white border-rose-500 text-rose-500 shadow-rose-100" 
+    //         : "bg-[#059669] border-[#059669] text-white shadow-emerald-200/50"
+    //       }`}
+    //     >
+    //       {isFormOpen ? <X size={18} /> : <Plus size={18} />}
+    //       {isFormOpen ? "Close Editor" : "Create New Class"}
+    //     </button>
+    //   </div>
+
+    //   {/* Form Section with Absolute Close Button */}
+    //   {isFormOpen && (
+    //     <div className="mb-10 relative">
+
+    //       <button 
+    //         onClick={handleCloseForm}
+    //         className="absolute top-4 right-4 z-20 p-2 bg-slate-100 hover:bg-rose-100 text-slate-400 hover:text-rose-600 rounded-full transition-colors duration-200"
+    //         title="Cancel and Close"
+    //       >
+    //         <X size={20} />
+    //       </button>
+
+    //       <AddEditLecture 
+    //         refreshLectures={fetchMentorLectures} 
+    //         editData={editData} 
+    //         clearEdit={handleCloseForm} 
+    //       />
+    //     </div>
+    //   )}
+
+    //   {/* Content Section */}
+    //   {loading ? (
+    //     <div className="flex flex-col items-center py-20"><Loader2 className="animate-spin text-[#059669]" size={40} /></div>
+    //   ) : (
+    //     <>
+    //       <div className="mb-12">
+    //         <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+    //           <div className="w-2 h-6 bg-[#059669] rounded-full"></div> Upcoming Classes
+    //         </h2>
+    //         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    //           {upcoming.length > 0 ? upcoming.map(l => <LectureCard key={l._id} l={l} isPast={false} />) : <p className="text-slate-400 italic">No future classes found.</p>}
+    //         </div>
+    //       </div>
+    //       <div>
+    //         <h2 className="text-xl font-bold text-slate-400 mb-6 flex items-center gap-2">
+    //           <div className="w-2 h-6 bg-slate-300 rounded-full"></div> Past History
+    //         </h2>
+    //         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    //           {past.length > 0 ? past.map(l => <LectureCard key={l._id} l={l} isPast={true} />) : <p className="text-slate-400 italic">No past classes.</p>}
+    //         </div>
+    //       </div>
+    //     </>
+    //   )}
+
+    //   {/* BUNNY.NET PREVIEW MODAL */}
+    //   {selectedVideo && (
+    //     <div className="fixed inset-0 bg-black/90 z-[3000] flex items-center justify-center p-4">
+    //       <div className="relative w-full max-w-4xl aspect-video">
+    //         <button
+    //           onClick={() => setSelectedVideo("")}
+    //           className="absolute -top-12 right-0 text-white font-bold flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg hover:bg-white/20 transition-all"
+    //         >
+    //           <X size={24} /> CLOSE PREVIEW
+    //         </button>
+    //         <iframe
+    //           src={selectedVideo}
+    //           className="w-full h-full rounded-2xl shadow-2xl border-2 border-white/10"
+    //           allowFullScreen
+    //           allow="autoplay; encrypted-media"
+    //         />
+    //       </div>
+    //     </div>
+    //   )}
+
+    //   {selectedLecture && <AddMaterialModal lecture={selectedLecture} onClose={() => setSelectedLecture(null)} />}
+    // </div>
+    <div className="max-w-7xl mx-auto p-3 sm:p-4 md:p-8 bg-slate-50 min-h-screen">
+
       {/* Back Button */}
       {courseId && (
-        <button 
+        <button
           onClick={() => navigate("/mentor/courses")}
-          className="mb-6 group flex items-center gap-3 bg-[#059669] text-white px-5 py-2.5 rounded-2xl font-black text-xs uppercase tracking-wider hover:bg-[#047857] transition-all duration-300 shadow-lg shadow-emerald-200/50 border-2 border-[#059669]"
+          className="mb-4 sm:mb-6 group flex items-center gap-2 sm:gap-3 bg-[#059669] text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-wider hover:bg-[#047857] transition-all duration-300 shadow-md sm:shadow-lg shadow-emerald-200/50 border-2 border-[#059669]"
         >
-          <div className="bg-white/20 rounded-lg p-1 group-hover:-translate-x-1 transition-transform">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
+          <div className="bg-white/20 rounded-md sm:rounded-lg p-1 group-hover:-translate-x-1 transition-transform">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
           </div>
           Back to All Courses
         </button>
       )}
 
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-3 sm:gap-4">
+
         <div>
-          <h1 className="text-3xl font-black text-slate-800 tracking-tight">My Class Schedule</h1>
-          <p className="text-[#059669] text-sm font-bold uppercase tracking-widest mt-1">Manage sessions & content</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight">
+            My Class Schedule
+          </h1>
+          <p className="text-[#059669] text-[10px] sm:text-sm font-bold uppercase tracking-widest mt-1">
+            Manage sessions & content
+          </p>
         </div>
-        
-        {/* Toggle Button: Create / Close */}
-        <button 
-          onClick={() => isFormOpen ? handleCloseForm() : setIsFormOpen(true)} 
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all duration-300 shadow-lg active:scale-95 border-2 ${
-            isFormOpen 
-            ? "bg-white border-rose-500 text-rose-500 shadow-rose-100" 
-            : "bg-[#059669] border-[#059669] text-white shadow-emerald-200/50"
-          }`}
+
+        {/* Toggle Button */}
+        <button
+          onClick={() => isFormOpen ? handleCloseForm() : setIsFormOpen(true)}
+          className={`w-full sm:w-auto justify-center flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 shadow-md sm:shadow-lg active:scale-95 border-2 ${isFormOpen
+              ? "bg-white border-rose-500 text-rose-500 shadow-rose-100"
+              : "bg-[#059669] border-[#059669] text-white shadow-emerald-200/50"
+            }`}
         >
-          {isFormOpen ? <X size={18} /> : <Plus size={18} />}
+          {isFormOpen ? <X size={16} /> : <Plus size={16} />}
           {isFormOpen ? "Close Editor" : "Create New Class"}
         </button>
       </div>
 
-      {/* Form Section with Absolute Close Button */}
+      {/* FORM */}
       {isFormOpen && (
-        <div className="mb-10 relative">
-          
-          <button 
+        <div className="mb-8 sm:mb-10 relative">
+
+          <button
             onClick={handleCloseForm}
-            className="absolute top-4 right-4 z-20 p-2 bg-slate-100 hover:bg-rose-100 text-slate-400 hover:text-rose-600 rounded-full transition-colors duration-200"
+            className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 p-1.5 sm:p-2 bg-slate-100 hover:bg-rose-100 text-slate-400 hover:text-rose-600 rounded-full transition-colors duration-200"
             title="Cancel and Close"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
-          
-          <AddEditLecture 
-            refreshLectures={fetchMentorLectures} 
-            editData={editData} 
-            clearEdit={handleCloseForm} 
+
+          <AddEditLecture
+            refreshLectures={fetchMentorLectures}
+            editData={editData}
+            clearEdit={handleCloseForm}
           />
         </div>
       )}
 
-      {/* Content Section */}
+      {/* CONTENT */}
       {loading ? (
-        <div className="flex flex-col items-center py-20"><Loader2 className="animate-spin text-[#059669]" size={40} /></div>
+        <div className="flex flex-col items-center py-16 sm:py-20">
+          <Loader2 className="animate-spin text-[#059669]" size={36} />
+        </div>
       ) : (
         <>
-          <div className="mb-12">
-            <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-              <div className="w-2 h-6 bg-[#059669] rounded-full"></div> Upcoming Classes
+          {/* Upcoming */}
+          <div className="mb-10 sm:mb-12">
+            <h2 className="text-lg sm:text-xl font-bold text-slate-800 mb-4 sm:mb-6 flex items-center gap-2">
+              <div className="w-2 h-5 sm:h-6 bg-[#059669] rounded-full"></div>
+              Upcoming Classes
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {upcoming.length > 0 ? upcoming.map(l => <LectureCard key={l._id} l={l} isPast={false} />) : <p className="text-slate-400 italic">No future classes found.</p>}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {upcoming.length > 0
+                ? upcoming.map(l => <LectureCard key={l._id} l={l} isPast={false} />)
+                : <p className="text-slate-400 italic text-sm">No future classes found.</p>}
             </div>
           </div>
+
+          {/* Past */}
           <div>
-            <h2 className="text-xl font-bold text-slate-400 mb-6 flex items-center gap-2">
-              <div className="w-2 h-6 bg-slate-300 rounded-full"></div> Past History
+            <h2 className="text-lg sm:text-xl font-bold text-slate-400 mb-4 sm:mb-6 flex items-center gap-2">
+              <div className="w-2 h-5 sm:h-6 bg-slate-300 rounded-full"></div>
+              Past History
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {past.length > 0 ? past.map(l => <LectureCard key={l._id} l={l} isPast={true} />) : <p className="text-slate-400 italic">No past classes.</p>}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {past.length > 0
+                ? past.map(l => <LectureCard key={l._id} l={l} isPast={true} />)
+                : <p className="text-slate-400 italic text-sm">No past classes.</p>}
             </div>
           </div>
         </>
       )}
 
-      {/* BUNNY.NET PREVIEW MODAL */}
+      {/* VIDEO MODAL */}
       {selectedVideo && (
-        <div className="fixed inset-0 bg-black/90 z-[3000] flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/90 z-[3000] flex items-center justify-center p-3 sm:p-4">
           <div className="relative w-full max-w-4xl aspect-video">
+
             <button
               onClick={() => setSelectedVideo("")}
-              className="absolute -top-12 right-0 text-white font-bold flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg hover:bg-white/20 transition-all"
+              className="absolute -top-10 sm:-top-12 right-0 text-white font-bold flex items-center gap-2 bg-white/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg hover:bg-white/20 transition-all text-xs sm:text-sm"
             >
-              <X size={24} /> CLOSE PREVIEW
+              <X size={20} /> CLOSE PREVIEW
             </button>
+
             <iframe
               src={selectedVideo}
-              className="w-full h-full rounded-2xl shadow-2xl border-2 border-white/10"
+              className="w-full h-full rounded-xl sm:rounded-2xl shadow-2xl border border-white/10"
               allowFullScreen
               allow="autoplay; encrypted-media"
             />
@@ -227,7 +350,12 @@ const MentorLectures = () => {
         </div>
       )}
 
-      {selectedLecture && <AddMaterialModal lecture={selectedLecture} onClose={() => setSelectedLecture(null)} />}
+      {selectedLecture && (
+        <AddMaterialModal
+          lecture={selectedLecture}
+          onClose={() => setSelectedLecture(null)}
+        />
+      )}
     </div>
   );
 };

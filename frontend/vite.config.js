@@ -1,3 +1,4 @@
+
 // import { defineConfig } from "vite";
 // import react from "@vitejs/plugin-react";
 // // import tailwindcss from '@tailwindcss/vite'
@@ -40,13 +41,35 @@
 //   },
 // });
 
+// import { defineConfig } from "vite";
+// import react from "@vitejs/plugin-react";
+
+// export default defineConfig({
+//   plugins: [react()],
+//   define: {
+//     // Zoom in variables ko dhoondta hai
+//     "global": "window",
+//     "process.env": {},
+//   },
+//   resolve: {
+//     alias: {
+//       "lodash": "lodash",
+//     },
+//   },
+//   optimizeDeps: {
+//     // Vite ko bolo ki inhe pehle se ready rakhe
+//     include: ["lodash", "@zoomus/websdk"],
+//   },
+// });
+
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+
 
 export default defineConfig({
   plugins: [react()],
   define: {
-    // Zoom in variables ko dhoondta hai
     "global": "window",
     "process.env": {},
   },
@@ -56,7 +79,6 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    // Vite ko bolo ki inhe pehle se ready rakhe
     include: ["lodash", "@zoomus/websdk"],
   },
 });
