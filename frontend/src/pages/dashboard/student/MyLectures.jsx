@@ -1,4 +1,4 @@
-// import axios from "axios";
+﻿// import axios from "axios";
 // import React, { useState, useEffect } from "react";
 // import {
 //   Play,
@@ -34,14 +34,12 @@
 //       setLoading(true);
 //       if (!token) return;
 
-
 //       const res = await axios.get("https://hilearnlmstool-production.up.railway.app/api/students/lectures", {
 //         headers: { Authorization: `Bearer ${token}` }
 //       });
 //       if (res.data.success) {
 //         setLectures(res.data.lectures.filter(l => l.lectureType?.toLowerCase() === "video"));
 //       }
-
 
 //       const dashRes = await axios.get("https://hilearnlmstool-production.up.railway.app/api/students/dashboard", {
 //         headers: { Authorization: `Bearer ${token}` }
@@ -272,8 +270,6 @@
 
 // export default MyLectures;
 
-
-
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import {
@@ -285,6 +281,8 @@ import {
   Download,
   CheckCircle,
   Calendar,
+  Brain,
+  Send,
 } from "lucide-react";
 
 const MyLectures = () => {
@@ -297,12 +295,16 @@ const MyLectures = () => {
   const [currentMaterials, setCurrentMaterials] = useState([]);
   const [activeLectureTitle, setActiveLectureTitle] = useState("");
   const [fetchingFiles, setFetchingFiles] = useState(false);
+  const [showQA, setShowQA] = useState(false);
+  const [selectedLectureForQA, setSelectedLectureForQA] = useState(null);
+  const [qaQuestion, setQaQuestion] = useState("");
+  const [qaAnswer, setQaAnswer] = useState("");
+  const [isAsking, setIsAsking] = useState(false);
 
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     fetchData();
-
   }, []);
 
   const fetchData = async () => {
@@ -310,24 +312,31 @@ const MyLectures = () => {
       setLoading(true);
       if (!token) return;
 
-
-      const res = await axios.get("https://hilearnlmstool-production.up.railway.app/api/students/lectures", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await axios.get(
+        "https://hilearnlmstool-production.up.railway.app/api/students/lectures",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       if (res.data.success) {
-        setLectures(res.data.lectures.filter(l => l.lectureType?.toLowerCase() === "video"));
+        setLectures(
+          res.data.lectures.filter(
+            (l) => l.lectureType?.toLowerCase() === "video",
+          ),
+        );
       }
 
-
-      const dashRes = await axios.get("https://hilearnlmstool-production.up.railway.app/api/students/dashboard", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const dashRes = await axios.get(
+        "https://hilearnlmstool-production.up.railway.app/api/students/dashboard",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
 
       if (dashRes.data.success) {
         const completedFromBackend = dashRes.data.completedList || [];
-        setCompletedLectures(completedFromBackend.map(id => id.toString()));
+        setCompletedLectures(completedFromBackend.map((id) => id.toString()));
       }
-
     } catch (err) {
       console.error("Fetch Error:", err);
     } finally {
@@ -340,10 +349,10 @@ const MyLectures = () => {
       const res = await axios.post(
         "https://hilearnlmstool-production.up.railway.app/api/students/complete-lecture",
         { lectureId },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       if (res.data.success) {
-        setCompletedLectures(prev => [...prev, lectureId]);
+        setCompletedLectures((prev) => [...prev, lectureId]);
       }
     } catch (err) {
       console.error(err);
@@ -363,11 +372,13 @@ const MyLectures = () => {
     const finalUrl = `https://iframe.mediadelivery.net/embed/${cleanLibID}/${cleanVideoID}?autoplay=true`;
     setSelectedVideo(finalUrl);
 
-    axios.post(
-      "https://hilearnlmstool-production.up.railway.app/api/students/update-access",
-      { lectureId },
-      { headers: { Authorization: `Bearer ${token}` } }
-    ).catch(e => console.error(e));
+    axios
+      .post(
+        "https://hilearnlmstool-production.up.railway.app/api/students/update-access",
+        { lectureId },
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
+      .catch((e) => console.error(e));
   };
 
   const handleOpenMaterials = async (lectureId, title) => {
@@ -375,13 +386,47 @@ const MyLectures = () => {
     setActiveLectureTitle(title);
     setShowMaterials(true);
     try {
-      const res = await axios.get(`https://hilearnlmstool-production.up.railway.app/api/materials/${lectureId}`);
+      const res = await axios.get(
+        `https://hilearnlmstool-production.up.railway.app/api/materials/${lectureId}`,
+      );
       setCurrentMaterials(res.data.success ? res.data.materials : []);
     } catch (err) {
       setCurrentMaterials([]);
     } finally {
       setFetchingFiles(false);
     }
+  };
+  const askQuestionAboutLecture = async () => {
+    if (!qaQuestion.trim()) return;
+    setIsAsking(true);
+    try {
+      const res = await fetch("http://localhost:8000/ask", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-RAG-Key": "rag-secret-key-change-in-prod",
+        },
+        body: JSON.stringify({
+          lecture_id: selectedLectureForQA?._id,
+          question: qaQuestion,
+        }),
+      });
+      const data = await res.json();
+      setQaAnswer(
+        data.answer || "No answer found. Lecture may not be indexed yet.",
+      );
+    } catch (err) {
+      setQaAnswer("Error getting answer. Please try again.");
+    } finally {
+      setIsAsking(false);
+    }
+  };
+
+  const openQAModal = (lecture) => {
+    setSelectedLectureForQA(lecture);
+    setQaQuestion("");
+    setQaAnswer("");
+    setShowQA(true);
   };
 
   if (loading) {
@@ -396,7 +441,6 @@ const MyLectures = () => {
   return (
     <div className="p-4 sm:p-6 bg-slate-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
-
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-10 border-b border-slate-200 pb-4 sm:pb-6">
           <div className="w-2 h-8 sm:h-10 bg-emerald-600 rounded-full"></div>
@@ -408,46 +452,59 @@ const MyLectures = () => {
 
         {lectures.length === 0 ? (
           <div className="text-center py-20 sm:py-32 bg-white rounded-[24px] sm:rounded-[32px] border border-slate-200 shadow-sm">
-            <VideoOff size={48} className="mx-auto text-slate-200 mb-4 sm:w-16 sm:h-16" />
+            <VideoOff
+              size={48}
+              className="mx-auto text-slate-200 mb-4 sm:w-16 sm:h-16"
+            />
             <p className="text-slate-500 text-base sm:text-xl font-bold">
               No lectures available.
             </p>
           </div>
         ) : (
-
           /* Grid */
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {lectures.map((lecture) => {
-
               const isCompleted = completedLectures.some(
-                id => id.toString() === lecture._id.toString()
+                (id) => id.toString() === lecture._id.toString(),
               );
 
               return (
                 <div
                   key={lecture._id}
-                  className={`bg-white rounded-[24px] sm:rounded-[32px] border border-slate-200 transition-all duration-300 overflow-hidden shadow-sm hover:-translate-y-1 hover:shadow-md group ${isCompleted ? "bg-emerald-50/10" : "bg-white"
-                    }`}
+                  className={`bg-white rounded-[24px] sm:rounded-[32px] border border-slate-200 transition-all duration-300 overflow-hidden shadow-sm hover:-translate-y-1 hover:shadow-md group ${
+                    isCompleted ? "bg-emerald-50/10" : "bg-white"
+                  }`}
                 >
-
                   {/* Thumbnail */}
                   <div
-                    onClick={() => handleWatchNow(lecture._id, lecture.videoID, lecture.libraryID)}
+                    onClick={() =>
+                      handleWatchNow(
+                        lecture._id,
+                        lecture.videoID,
+                        lecture.libraryID,
+                      )
+                    }
                     className="aspect-video relative bg-slate-900 flex items-center justify-center cursor-pointer"
                   >
-                    <Play size={36} className="text-white/30 z-10 sm:w-11 sm:h-11" />
+                    <Play
+                      size={36}
+                      className="text-white/30 z-10 sm:w-11 sm:h-11"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                   </div>
 
                   <div className="p-4 sm:p-6">
-
                     {/* Top Info */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-
                       <div className="flex items-center gap-2 text-[10px] sm:text-[11px] text-slate-400 font-black uppercase">
-                        <Calendar size={12} className="text-emerald-500 sm:w-3.5 sm:h-3.5" />
+                        <Calendar
+                          size={12}
+                          className="text-emerald-500 sm:w-3.5 sm:h-3.5"
+                        />
                         {lecture.createdAt || lecture.date
-                          ? new Date(lecture.createdAt || lecture.date).toLocaleDateString("en-GB")
+                          ? new Date(
+                              lecture.createdAt || lecture.date,
+                            ).toLocaleDateString("en-GB")
                           : "RECENT"}
                       </div>
 
@@ -467,17 +524,32 @@ const MyLectures = () => {
                     {/* Buttons */}
                     <div className="flex gap-2 sm:gap-3">
                       <button
-                        onClick={() => handleWatchNow(lecture._id, lecture.videoID, lecture.libraryID)}
+                        onClick={() =>
+                          handleWatchNow(
+                            lecture._id,
+                            lecture.videoID,
+                            lecture.libraryID,
+                          )
+                        }
                         className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-[10px] sm:text-xs transition-colors shadow-sm"
                       >
                         WATCH NOW
                       </button>
 
                       <button
-                        onClick={() => handleOpenMaterials(lecture._id, lecture.title)}
+                        onClick={() =>
+                          handleOpenMaterials(lecture._id, lecture.title)
+                        }
                         className="p-2.5 sm:p-3 bg-slate-100 text-slate-600 rounded-xl sm:rounded-2xl border border-slate-200 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
                       >
                         <Download size={16} className="sm:w-5 sm:h-5" />
+                      </button>
+                      <button
+                        onClick={() => openQAModal(lecture)}
+                        className="p-2.5 bg-purple-100 text-purple-600 rounded-xl border border-purple-200 hover:bg-purple-50 transition-colors"
+                        title="Ask AI about this lecture"
+                      >
+                        <Brain size={16} />
                       </button>
                     </div>
 
@@ -490,7 +562,6 @@ const MyLectures = () => {
                         Mark Completed
                       </button>
                     )}
-
                   </div>
                 </div>
               );
@@ -498,12 +569,61 @@ const MyLectures = () => {
           </div>
         )}
       </div>
+      {showQA && selectedLectureForQA && (
+        <div className="fixed inset-0 bg-slate-900/70 z-[9999] flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">
+            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-4 text-white flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <Brain size={20} />
+                <h3 className="font-bold text-lg">AI Q&A Assistant</h3>
+              </div>
+              <button onClick={() => setShowQA(false)}>
+                <X size={22} />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <textarea
+                className="w-full p-3 border-2 border-purple-100 rounded-xl focus:border-purple-500 outline-none resize-none text-sm"
+                placeholder="Ask anything about this lecture..."
+                value={qaQuestion}
+                onChange={(e) => setQaQuestion(e.target.value)}
+                rows={3}
+              />
+              {qaAnswer && (
+                <div className="p-4 bg-purple-50 rounded-xl border border-purple-100">
+                  <p className="text-slate-700 text-sm leading-relaxed">
+                    {qaAnswer}
+                  </p>
+                </div>
+              )}
+            </div>
+            <div className="border-t p-4">
+              <button
+                onClick={askQuestionAboutLecture}
+                disabled={isAsking || !qaQuestion.trim()}
+                className="w-full bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-sm"
+              >
+                {isAsking ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    Asking...
+                  </>
+                ) : (
+                  <>
+                    <Send size={16} />
+                    Ask AI
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* MATERIAL MODAL */}
       {showMaterials && (
         <div className="fixed inset-0 bg-slate-900/70 z-[9999] flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-md rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-2xl">
-
             <div className="bg-emerald-600 p-4 sm:p-6 text-white flex justify-between items-center">
               <h3 className="font-black text-lg sm:text-xl">Study Materials</h3>
               <button onClick={() => setShowMaterials(false)}>
@@ -521,7 +641,6 @@ const MyLectures = () => {
       {/* VIDEO MODAL */}
       {selectedVideo && (
         <div className="fixed inset-0 bg-black/95 z-[10000] flex items-center justify-center p-2 sm:p-4">
-
           <button
             onClick={() => setSelectedVideo("")}
             className="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/70 hover:text-white"
@@ -544,5 +663,3 @@ const MyLectures = () => {
 };
 
 export default MyLectures;
-
-
