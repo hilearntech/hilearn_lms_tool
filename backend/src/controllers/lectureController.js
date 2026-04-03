@@ -7,6 +7,15 @@ const sendEmail = require("../utils/sendEmail");
 exports.createLecture = async (req, res) => {
   try {
     const lecture = await Lecture.create(req.body);
+    
+    // RAG - Index lecture
+    try {
+      await fetch('http://localhost:8000/index-text', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-RAG-Key': 'rag-secret-key-change-in-prod' },
+        body: JSON.stringify({ lecture_id: lecture._id.toString(), title: lecture.title, text: req.body.content || lecture.title })
+      });
+    } catch (e) { console.log('RAG indexing error:', e.message); }
 
     const enrolledStudents = await User.find({ enrolledCourses: req.body.course });
 

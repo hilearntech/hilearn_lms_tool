@@ -1,4 +1,4 @@
-import React, { useEffect,状态 } from "react";
+import React, { useEffect, 状态 } from "react";
 import { BookOpen, PlayCircle, Clock, GraduationCap, Users } from "lucide-react";
 
 const MentorCourses = () => {
@@ -9,7 +9,7 @@ const MentorCourses = () => {
     const fetchMentorCourses = async () => {
       try {
         const token = localStorage.getItem("token");
-        
+
         const res = await fetch("https://hilearnlmstool-production.up.railway.app/api/mentor/my-courses", {
           headers: { "Authorization": `Bearer ${token}` }
         });
@@ -30,55 +30,140 @@ const MentorCourses = () => {
   if (loading) return <div className="p-8 text-center text-slate-500 font-bold">Loading assigned courses...</div>;
 
   return (
-    <div className="max-w-7xl p-4 md:p-8 mx-auto min-h-screen">
-      <div className="mb-8">
-        <h1 className="text-3xl font-black text-slate-800">My Assigned Courses</h1>
-        <p className="text-[#059669] text-1xl font-medium">Manage and monitor the courses you teach</p>
+    // <div className="max-w-7xl p-4 md:p-8 mx-auto min-h-screen">
+    //   <div className="mb-8">
+    //     <h1 className="text-3xl font-black text-slate-800">My Assigned Courses</h1>
+    //     <p className="text-[#059669] text-1xl font-medium">Manage and monitor the courses you teach</p>
+    //   </div>
+
+    //   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    //     {assignedCourses.length > 0 ? (
+    //       assignedCourses.map((course) => (
+    //         <div key={course._id} className="bg-white rounded-[24px] border border-slate-100 overflow-hidden shadow-sm hover:shadow-md transition-all group">
+    //           {/* Theme color bar */}
+    //           <div className="h-3 bg-[#059669]"></div> 
+
+    //           <div className="p-6">
+    //             <div className="flex items-start justify-between mb-4">
+    //               <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-[#059669] group-hover:scale-110 transition-transform">
+    //                 <BookOpen size={24} />
+    //               </div>
+    //               <span className="bg-blue-100 text-blue-600 text-[10px] font-bold px-3 py-1 rounded-full uppercase">
+    //                 Faculty
+    //               </span>
+    //             </div>
+
+    //             <h3 className="text-lg font-bold text-slate-800 mb-2">{course.title}</h3>
+    //             <p className="text-slate-500 text-sm mb-6 line-clamp-2">
+    //               {course.description || "Teaching modules and managing students for this course."}
+    //             </p>
+
+    //             <div className="flex items-center gap-4 text-slate-400 text-xs font-bold mb-6">
+    //               <span className="flex items-center gap-1"><Clock size={14} /> {course.duration || "N/A"}</span>
+    //               <span className="flex items-center gap-1"><Users size={14} /> {course.studentCount || "0"} Students</span>
+    //             </div>
+
+    //             <button 
+    //               onClick={() => window.location.href = `/mentor/lectures?courseId=${course._id}`}
+    //               className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-3 rounded-xl font-bold text-sm hover:bg-slate-800 transition-all shadow-lg shadow-slate-200"
+    //             >
+    //               <PlayCircle size={18} /> View Lectures
+    //             </button>
+    //           </div>
+    //         </div>
+    //       ))
+    //     ) : (
+    //       <div className="col-span-full text-center py-20 bg-white rounded-[32px] border-2 border-dashed border-slate-200">
+    //         <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+    //            <BookOpen className="text-slate-300" size={32} />
+    //         </div>
+    //         <p className="text-slate-500 font-bold">No courses assigned to you yet.</p>
+    //         <p className="text-slate-400 text-sm mt-1">Contact admin to assign batches.</p>
+    //       </div>
+    //     )}
+    //   </div>
+    // </div>
+    <div className="max-w-7xl p-3 sm:p-4 md:p-8 mx-auto min-h-screen">
+
+      {/* HEADER */}
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-800">
+          My Assigned Courses
+        </h1>
+        <p className="text-[#059669] text-sm sm:text-base font-medium">
+          Manage and monitor the courses you teach
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* GRID */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {assignedCourses.length > 0 ? (
           assignedCourses.map((course) => (
-            <div key={course._id} className="bg-white rounded-[24px] border border-slate-100 overflow-hidden shadow-sm hover:shadow-md transition-all group">
-              {/* Theme color bar */}
-              <div className="h-3 bg-[#059669]"></div> 
-              
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-[#059669] group-hover:scale-110 transition-transform">
-                    <BookOpen size={24} />
+            <div
+              key={course._id}
+              className="bg-white rounded-2xl sm:rounded-[24px] border border-slate-100 overflow-hidden shadow-sm hover:shadow-md transition-all group"
+            >
+              {/* Top bar */}
+              <div className="h-2 sm:h-3 bg-[#059669]"></div>
+
+              <div className="p-4 sm:p-6">
+
+                {/* ICON + TAG */}
+                <div className="flex items-start justify-between mb-3 sm:mb-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-[#059669] group-hover:scale-110 transition-transform">
+                    <BookOpen size={20} />
                   </div>
-                  <span className="bg-blue-100 text-blue-600 text-[10px] font-bold px-3 py-1 rounded-full uppercase">
+
+                  <span className="bg-blue-100 text-blue-600 text-[9px] sm:text-[10px] font-bold px-2 sm:px-3 py-1 rounded-full uppercase">
                     Faculty
                   </span>
                 </div>
 
-                <h3 className="text-lg font-bold text-slate-800 mb-2">{course.title}</h3>
-                <p className="text-slate-500 text-sm mb-6 line-clamp-2">
+                {/* TITLE */}
+                <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-1 sm:mb-2">
+                  {course.title}
+                </h3>
+
+                {/* DESC */}
+                <p className="text-slate-500 text-xs sm:text-sm mb-4 sm:mb-6 line-clamp-2">
                   {course.description || "Teaching modules and managing students for this course."}
                 </p>
 
-                <div className="flex items-center gap-4 text-slate-400 text-xs font-bold mb-6">
-                  <span className="flex items-center gap-1"><Clock size={14} /> {course.duration || "N/A"}</span>
-                  <span className="flex items-center gap-1"><Users size={14} /> {course.studentCount || "0"} Students</span>
+                {/* INFO */}
+                <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-slate-400 text-[10px] sm:text-xs font-bold mb-4 sm:mb-6">
+                  <span className="flex items-center gap-1">
+                    <Clock size={12} /> {course.duration || "N/A"}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Users size={12} /> {course.studentCount || "0"} Students
+                  </span>
                 </div>
 
-                <button 
-                  onClick={() => window.location.href = `/mentor/lectures?courseId=${course._id}`}
-                  className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-3 rounded-xl font-bold text-sm hover:bg-slate-800 transition-all shadow-lg shadow-slate-200"
+                {/* BUTTON */}
+                <button
+                  onClick={() =>
+                    (window.location.href = `/mentor/lectures?courseId=${course._id}`)
+                  }
+                  className="w-full flex items-center justify-center gap-2 bg-slate-900 text-white py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm hover:bg-slate-800 transition-all shadow-md sm:shadow-lg shadow-slate-200"
                 >
-                  <PlayCircle size={18} /> View Lectures
+                  <PlayCircle size={16} /> View Lectures
                 </button>
               </div>
             </div>
           ))
         ) : (
-          <div className="col-span-full text-center py-20 bg-white rounded-[32px] border-2 border-dashed border-slate-200">
-            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-               <BookOpen className="text-slate-300" size={32} />
+          <div className="col-span-full text-center py-12 sm:py-20 bg-white rounded-2xl sm:rounded-[32px] border-2 border-dashed border-slate-200 px-4">
+
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+              <BookOpen className="text-slate-300" size={28} />
             </div>
-            <p className="text-slate-500 font-bold">No courses assigned to you yet.</p>
-            <p className="text-slate-400 text-sm mt-1">Contact admin to assign batches.</p>
+
+            <p className="text-slate-500 font-bold text-sm sm:text-base">
+              No courses assigned to you yet.
+            </p>
+            <p className="text-slate-400 text-xs sm:text-sm mt-1">
+              Contact admin to assign batches.
+            </p>
           </div>
         )}
       </div>
