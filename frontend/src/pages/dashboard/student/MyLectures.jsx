@@ -268,7 +268,10 @@
 //   );
 // };
 
-// export default MyLectures;
+// 
+      {showTranscribe && (<div className="fixed inset-0 bg-slate-900/70 z-[9999] flex items-center justify-center p-4"><div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"><div className="bg-blue-600 p-4 text-white flex justify-between"><h3 className="font-bold">Transcription</h3><button onClick={() => setShowTranscribe(false)}><X size={22} /></button></div><div className="p-4 space-y-4"><input type="text" className="w-full p-3 border-2 border-blue-100 rounded-xl focus:border-blue-500 outline-none text-sm" placeholder="YouTube URL" value={transcribeUrl} onChange={(e) => setTranscribeUrl(e.target.value)} />{transcribeResult && (<div className="p-4 bg-blue-50 rounded-xl"><p className="text-sm">{transcribeResult}</p></div>)}</div><div className="border-t p-4"><button onClick={handleTranscribe} disabled={isTranscribing} className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">{isTranscribing ? "Transcribing..." : "Transcribe"}</button></div></div></div>)}
+      {showSummary && selectedLectureForSummary && (<div className="fixed inset-0 bg-slate-900/70 z-[9999] flex items-center justify-center p-4"><div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"><div className="bg-orange-600 p-4 text-white flex justify-between"><h3 className="font-bold">{selectedLectureForSummary.title}</h3><button onClick={() => setShowSummary(false)}><X size={22} /></button></div><div className="p-4">{isSummarizing ? <div className="flex justify-center py-8"><Loader2 className="animate-spin" /></div> : <div className="p-4 bg-orange-50"><p className="text-sm">{summaryResult}</p></div>}</div></div></div>)}
+
 
 import axios from "axios";
 import React, { useState, useEffect } from "react";
@@ -283,6 +286,8 @@ import {
   Calendar,
   Brain,
   Send,
+  FileText,
+  Zap,
 } from "lucide-react";
 
 const MyLectures = () => {
@@ -300,6 +305,14 @@ const MyLectures = () => {
   const [qaQuestion, setQaQuestion] = useState("");
   const [qaAnswer, setQaAnswer] = useState("");
   const [isAsking, setIsAsking] = useState(false);
+  const [showTranscribe, setShowTranscribe] = useState(false);
+  const [transcribeUrl, setTranscribeUrl] = useState("");
+  const [transcribeResult, setTranscribeResult] = useState("");
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
+  const [summaryResult, setSummaryResult] = useState("");
+  const [isSummarizing, setIsSummarizing] = useState(false);
+  const [selectedLectureForSummary, setSelectedLectureForSummary] = useState(null);
 
   const token = localStorage.getItem("token");
 
@@ -422,6 +435,42 @@ const MyLectures = () => {
     }
   };
 
+
+  const handleTranscribe = async () => {
+    if (!transcribeUrl.trim()) return alert("Enter YouTube URL");
+    setIsTranscribing(true);
+    try {
+      const res = await fetch("http://localhost:8000/transcribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-RAG-Key": "rag-secret-key-change-in-prod" },
+        body: JSON.stringify({ youtube_url: transcribeUrl })
+      });
+      const data = await res.json();
+      setTranscribeResult(data.transcript || "Transcription failed");
+    } catch (err) {
+      setTranscribeResult("Error transcribing");
+    } finally {
+      setIsTranscribing(false);
+    }
+  };
+
+  const handleSummarize = async (lecture) => {
+    setSelectedLectureForSummary(lecture);
+    setShowSummary(true);
+    setIsSummarizing(true);
+    try {
+      const res = await fetch("http://localhost:8000/summary/" + lecture._id, {
+        method: "GET",
+        headers: { "X-RAG-Key": "rag-secret-key-change-in-prod" }
+      });
+      const data = await res.json();
+      setSummaryResult(data.summary || "No summary");
+    } catch (err) {
+      setSummaryResult("Error generating summary");
+    } finally {
+      setIsSummarizing(false);
+    }
+  };
   const openQAModal = (lecture) => {
     setSelectedLectureForQA(lecture);
     setQaQuestion("");
@@ -661,5 +710,9 @@ const MyLectures = () => {
     </div>
   );
 };
+
+
+      {showTranscribe && (<div className="fixed inset-0 bg-slate-900/70 z-[9999] flex items-center justify-center p-4"><div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"><div className="bg-blue-600 p-4 text-white flex justify-between"><h3 className="font-bold">Transcription</h3><button onClick={() => setShowTranscribe(false)}><X size={22} /></button></div><div className="p-4 space-y-4"><input type="text" className="w-full p-3 border-2 border-blue-100 rounded-xl focus:border-blue-500 outline-none text-sm" placeholder="YouTube URL" value={transcribeUrl} onChange={(e) => setTranscribeUrl(e.target.value)} />{transcribeResult && (<div className="p-4 bg-blue-50 rounded-xl"><p className="text-sm">{transcribeResult}</p></div>)}</div><div className="border-t p-4"><button onClick={handleTranscribe} disabled={isTranscribing} className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">{isTranscribing ? "Transcribing..." : "Transcribe"}</button></div></div></div>)}
+      {showSummary && selectedLectureForSummary && (<div className="fixed inset-0 bg-slate-900/70 z-[9999] flex items-center justify-center p-4"><div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"><div className="bg-orange-600 p-4 text-white flex justify-between"><h3 className="font-bold">{selectedLectureForSummary.title}</h3><button onClick={() => setShowSummary(false)}><X size={22} /></button></div><div className="p-4">{isSummarizing ? <div className="flex justify-center py-8"><Loader2 className="animate-spin" /></div> : <div className="p-4 bg-orange-50"><p className="text-sm">{summaryResult}</p></div>}</div></div></div>)}
 
 export default MyLectures;
