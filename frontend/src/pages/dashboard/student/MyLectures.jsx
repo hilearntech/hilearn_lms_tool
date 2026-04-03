@@ -269,8 +269,8 @@
 // };
 
 // 
-      {showTranscribe && (<div className="fixed inset-0 bg-slate-900/70 z-[9999] flex items-center justify-center p-4"><div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"><div className="bg-blue-600 p-4 text-white flex justify-between"><h3 className="font-bold">Transcription</h3><button onClick={() => setShowTranscribe(false)}><X size={22} /></button></div><div className="p-4 space-y-4"><input type="text" className="w-full p-3 border-2 border-blue-100 rounded-xl focus:border-blue-500 outline-none text-sm" placeholder="YouTube URL" value={transcribeUrl} onChange={(e) => setTranscribeUrl(e.target.value)} />{transcribeResult && (<div className="p-4 bg-blue-50 rounded-xl"><p className="text-sm">{transcribeResult}</p></div>)}</div><div className="border-t p-4"><button onClick={handleTranscribe} disabled={isTranscribing} className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">{isTranscribing ? "Transcribing..." : "Transcribe"}</button></div></div></div>)}
-      {showSummary && selectedLectureForSummary && (<div className="fixed inset-0 bg-slate-900/70 z-[9999] flex items-center justify-center p-4"><div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"><div className="bg-orange-600 p-4 text-white flex justify-between"><h3 className="font-bold">{selectedLectureForSummary.title}</h3><button onClick={() => setShowSummary(false)}><X size={22} /></button></div><div className="p-4">{isSummarizing ? <div className="flex justify-center py-8"><Loader2 className="animate-spin" /></div> : <div className="p-4 bg-orange-50"><p className="text-sm">{summaryResult}</p></div>}</div></div></div>)}
+     // {showTranscribe && (<div className="fixed inset-0 bg-slate-900/70 z-[9999] flex items-center justify-center p-4"><div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"><div className="bg-blue-600 p-4 text-white flex justify-between"><h3 className="font-bold">Transcription</h3><button onClick={() => setShowTranscribe(false)}><X size={22} /></button></div><div className="p-4 space-y-4"><input type="text" className="w-full p-3 border-2 border-blue-100 rounded-xl focus:border-blue-500 outline-none text-sm" placeholder="YouTube URL" value={transcribeUrl} onChange={(e) => setTranscribeUrl(e.target.value)} />{transcribeResult && (<div className="p-4 bg-blue-50 rounded-xl"><p className="text-sm">{transcribeResult}</p></div>)}</div><div className="border-t p-4"><button onClick={handleTranscribe} disabled={isTranscribing} className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">{isTranscribing ? "Transcribing..." : "Transcribe"}</button></div></div></div>)}
+      //{showSummary && selectedLectureForSummary && (<div className="fixed inset-0 bg-slate-900/70 z-[9999] flex items-center justify-center p-4"><div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"><div className="bg-orange-600 p-4 text-white flex justify-between"><h3 className="font-bold">{selectedLectureForSummary.title}</h3><button onClick={() => setShowSummary(false)}><X size={22} /></button></div><div className="p-4">{isSummarizing ? <div className="flex justify-center py-8"><Loader2 className="animate-spin" /></div> : <div className="p-4 bg-orange-50"><p className="text-sm">{summaryResult}</p></div>}</div></div></div>)}
 
 
 import axios from "axios";
@@ -286,7 +286,6 @@ import {
   Calendar,
   Brain,
   Send,
-  FileText,
   Zap,
 } from "lucide-react";
 
@@ -600,6 +599,13 @@ const MyLectures = () => {
                       >
                         <Brain size={16} />
                       </button>
+                      <button
+                        onClick={() => handleSummarize(lecture)}
+                        className="p-2.5 bg-orange-100 text-orange-600 rounded-xl border border-orange-200 hover:bg-orange-50 transition-colors"
+                        title="Summarize this lecture"
+                      >
+                        <Zap size={16} />
+                      </button>
                     </div>
 
                     {/* Mark Complete */}
@@ -707,12 +713,17 @@ const MyLectures = () => {
           </div>
         </div>
       )}
+        {/* TRANSCRIBE MODAL */}
+      {showTranscribe && (<div className="fixed inset-0 bg-slate-900/70 z-[9999] flex items-center justify-center p-4"><div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"><div className="bg-blue-600 p-4 text-white flex justify-between"><h3 className="font-bold">Transcription</h3><button onClick={() => setShowTranscribe(false)}><X size={22} /></button></div><div className="p-4 space-y-4"><input type="text" className="w-full p-3 border-2 border-blue-100 rounded-xl focus:border-blue-500 outline-none text-sm" placeholder="YouTube URL" value={transcribeUrl} onChange={(e) => setTranscribeUrl(e.target.value)} />{transcribeResult && (<div className="p-4 bg-blue-50 rounded-xl"><p className="text-sm">{transcribeResult}</p></div>)}</div><div className="border-t p-4"><button onClick={handleTranscribe} disabled={isTranscribing} className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">{isTranscribing ? "Transcribing..." : "Transcribe"}</button></div></div></div>)}
+
+      {/* SUMMARY MODAL */}
+      {showSummary && selectedLectureForSummary && (<div className="fixed inset-0 bg-slate-900/70 z-[9999] flex items-center justify-center p-4"><div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"><div className="bg-orange-600 p-4 text-white flex justify-between"><h3 className="font-bold">{selectedLectureForSummary.title}</h3><button onClick={() => setShowSummary(false)}><X size={22} /></button></div><div className="p-4">{isSummarizing ? <div className="flex justify-center py-8"><Loader2 className="animate-spin" /></div> : <div className="p-4 bg-orange-50"><p className="text-sm">{summaryResult}</p></div>}</div></div></div>)}
     </div>
   );
 };
 
 
-      {showTranscribe && (<div className="fixed inset-0 bg-slate-900/70 z-[9999] flex items-center justify-center p-4"><div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"><div className="bg-blue-600 p-4 text-white flex justify-between"><h3 className="font-bold">Transcription</h3><button onClick={() => setShowTranscribe(false)}><X size={22} /></button></div><div className="p-4 space-y-4"><input type="text" className="w-full p-3 border-2 border-blue-100 rounded-xl focus:border-blue-500 outline-none text-sm" placeholder="YouTube URL" value={transcribeUrl} onChange={(e) => setTranscribeUrl(e.target.value)} />{transcribeResult && (<div className="p-4 bg-blue-50 rounded-xl"><p className="text-sm">{transcribeResult}</p></div>)}</div><div className="border-t p-4"><button onClick={handleTranscribe} disabled={isTranscribing} className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">{isTranscribing ? "Transcribing..." : "Transcribe"}</button></div></div></div>)}
-      {showSummary && selectedLectureForSummary && (<div className="fixed inset-0 bg-slate-900/70 z-[9999] flex items-center justify-center p-4"><div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"><div className="bg-orange-600 p-4 text-white flex justify-between"><h3 className="font-bold">{selectedLectureForSummary.title}</h3><button onClick={() => setShowSummary(false)}><X size={22} /></button></div><div className="p-4">{isSummarizing ? <div className="flex justify-center py-8"><Loader2 className="animate-spin" /></div> : <div className="p-4 bg-orange-50"><p className="text-sm">{summaryResult}</p></div>}</div></div></div>)}
+    //  {showTranscribe && (<div className="fixed inset-0 bg-slate-900/70 z-[9999] flex items-center justify-center p-4"><div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"><div className="bg-blue-600 p-4 text-white flex justify-between"><h3 className="font-bold">Transcription</h3><button onClick={() => setShowTranscribe(false)}><X size={22} /></button></div><div className="p-4 space-y-4"><input type="text" className="w-full p-3 border-2 border-blue-100 rounded-xl focus:border-blue-500 outline-none text-sm" placeholder="YouTube URL" value={transcribeUrl} onChange={(e) => setTranscribeUrl(e.target.value)} />{transcribeResult && (<div className="p-4 bg-blue-50 rounded-xl"><p className="text-sm">{transcribeResult}</p></div>)}</div><div className="border-t p-4"><button onClick={handleTranscribe} disabled={isTranscribing} className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">{isTranscribing ? "Transcribing..." : "Transcribe"}</button></div></div></div>)}
+      //{showSummary && selectedLectureForSummary && (<div className="fixed inset-0 bg-slate-900/70 z-[9999] flex items-center justify-center p-4"><div className="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl"><div className="bg-orange-600 p-4 text-white flex justify-between"><h3 className="font-bold">{selectedLectureForSummary.title}</h3><button onClick={() => setShowSummary(false)}><X size={22} /></button></div><div className="p-4">{isSummarizing ? <div className="flex justify-center py-8"><Loader2 className="animate-spin" /></div> : <div className="p-4 bg-orange-50"><p className="text-sm">{summaryResult}</p></div>}</div></div></div>)}
 
 export default MyLectures;

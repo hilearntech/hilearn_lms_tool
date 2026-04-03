@@ -13,7 +13,7 @@
 //   const [score, setScore] = useState(0);
 //   const [showResult, setShowResult] = useState(false);
 //   const [submitting, setSubmitting] = useState(false);
-  const [generatingAI, setGeneratingAI] = useState(false);
+ // const [generatingAI, setGeneratingAI] = useState(false);
 //   const navigate = useNavigate();
 
 //   const fetchQuizzes = async () => {
@@ -37,30 +37,30 @@
 //   useEffect(() => {
 //     fetchQuizzes();
 //   }, []);
-  const generateQuizWithAI = async (courseId) => {
-    try {
-      setGeneratingAI(true);
-      const token = localStorage.getItem("token");
-      const res = await axios.post("http://localhost:5000/api/quiz", {
-        title: `AI Generated Quiz - ${new Date().toLocaleDateString()}`,
-        course: courseId,
-        lectureId: courseId,
-        duration: 30,
-        questions: []
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.data.success) {
-        alert("? Quiz generated! Refreshing...");
-        fetchQuizzes();
-      }
-    } catch (err) {
-      console.error("AI Generation Error:", err);
-      alert("? Failed to generate quiz");
-    } finally {
-      setGeneratingAI(false);
-    }
-  };
+  // const generateQuizWithAI = async (courseId) => {
+  //   try {
+  //     setGeneratingAI(true);
+  //     const token = localStorage.getItem("token");
+  //     const res = await axios.post("http://localhost:5000/api/quiz", {
+  //       title: `AI Generated Quiz - ${new Date().toLocaleDateString()}`,
+  //       course: courseId,
+  //       lectureId: courseId,
+  //       duration: 30,
+  //       questions: []
+  //     }, {
+  //       headers: { Authorization: `Bearer ${token}` }
+  //     });
+  //     if (res.data.success) {
+  //       alert("? Quiz generated! Refreshing...");
+  //       fetchQuizzes();
+  //     }
+  //   } catch (err) {
+  //     console.error("AI Generation Error:", err);
+  //     alert("? Failed to generate quiz");
+  //   } finally {
+  //     setGeneratingAI(false);
+  //   }
+  // };
 
 //   const startQuiz = (quiz) => {
 //     if (quiz.isAttempted) return;
