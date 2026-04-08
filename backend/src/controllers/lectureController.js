@@ -1,40 +1,177 @@
+// const Lecture = require("../models/Lecture");
+// const User = require("../models/User"); 
+// const Notification = require("../models/Notification"); 
+// const sendEmail = require("../utils/sendEmail");
+
+
+// exports.createLecture = async (req, res) => {
+//   try {
+//     const lecture = await Lecture.create(req.body);
+    
+//     // RAG - Index lecture
+//     try {
+//       await fetch('http://localhost:8000/index-text', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json', 'X-RAG-Key': 'rag-secret-key-change-in-prod' },
+//         body: JSON.stringify({ lecture_id: lecture._id.toString(), title: lecture.title, text: req.body.content || lecture.title })
+//       });
+//     } catch (e) { console.log('RAG indexing error:', e.message); }
+
+//     const enrolledStudents = await User.find({ enrolledCourses: req.body.course });
+
+   
+//     if (enrolledStudents.length > 0) {
+//       const notificationPromises = enrolledStudents.map(async (student) => {
+        
+        
+//         await Notification.create({
+//           student: student._id,
+//           title: "New Lecture Uploaded! 📚",
+//           message: `A new lecture "${lecture.title}" has been added to your course.`,
+//           type: "lecture"
+//         });
+
+       
+//         try {
+//           await sendEmail({
+//             to: student.email,
+//             subject: `New Content: ${lecture.title}`,
+//             text: `Hi ${student.name},\n\nA new lecture has been uploaded: ${lecture.title}.\nLogin to your dashboard to watch it now!`
+//           });
+//         } catch (mailErr) {
+//           console.error(`Email fail ho gaya ${student.email} ke liye:`, mailErr.message);
+//         }
+//       });
+
+      
+//       Promise.all(notificationPromises);
+//     }
+
+//     res.status(201).json({ success: true, lecture });
+//   } catch (error) {
+//     res.status(400).json({ success: false, error: error.message });
+//   }
+// };
+
+// exports.getLectures = async (req, res) => {
+//   try {
+//     let query = {};
+
+   
+//     if (req.user && req.user.role === "student") {
+//       if (req.user.enrolledCourses && req.user.enrolledCourses.length > 0) {
+        
+//         const courseIds = req.user.enrolledCourses.map(c => c._id);
+//         query = { course: { $in: courseIds } };
+//       } else {
+       
+//         return res.json({ success: true, count: 0, lectures: [] });
+//       }
+//     }
+
+//     const lectures = await Lecture.find(query).sort({ createdAt: -1 }).populate("course");
+    
+//     res.json({ 
+//       success: true, 
+//       count: lectures.length,
+//       lectures: lectures 
+//     });
+//   } catch (error) {
+//     res.status(500).json({ success: false, error: error.message });
+//   }
+// };
+
+// exports.updateLecture = async (req, res) => {
+//   try {
+//     const lecture = await Lecture.findByIdAndUpdate(req.params.id, req.body, { new: true });
+//     if (!lecture) return res.status(404).json({ success: false, message: "Lecture not found" });
+//     res.json({ success: true, lecture });
+//   } catch (error) {
+//     res.status(500).json({ success: false, error: error.message });
+//   }
+// };
+
+// exports.deleteLecture = async (req, res) => {
+//   try {
+//     const lecture = await Lecture.findByIdAndDelete(req.params.id);
+//     if (!lecture) return res.status(404).json({ success: false, message: "Lecture not found" });
+//     res.json({ success: true, message: "Lecture deleted" });
+//   } catch (error) {
+//     res.status(500).json({ success: false, error: error.message });
+//   }
+// };
+
+
 const Lecture = require("../models/Lecture");
 const User = require("../models/User"); 
 const Notification = require("../models/Notification"); 
 const sendEmail = require("../utils/sendEmail");
 
+// ─── Helper: Index lecture in RAG ─────────────────────────────────────────────
+const indexLectureInRAG = async (lecture, extraText = "") => {
+  try {
+    // Build the best possible text from whatever is available
+    const textParts = [
+      lecture.title ? `Lecture Title: ${lecture.title}` : "",
+      lecture.description ? `Description: ${lecture.description}` : "",
+      lecture.content ? `Content: ${lecture.content}` : "",
+      lecture.notes ? `Notes: ${lecture.notes}` : "",
+      lecture.summary ? `Summary: ${lecture.summary}` : "",
+      extraText ? `Additional Info: ${extraText}` : "",
+    ].filter(Boolean);
+
+    const text = textParts.length > 0
+      ? textParts.join("\n\n")
+      : `This is a lecture titled: ${lecture.title}. Content will be added when the video is transcribed.`;
+
+    await fetch("http://localhost:8000/index-text", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-RAG-Key": "rag-secret-key-change-in-prod",
+      },
+      body: JSON.stringify({
+        lecture_id: lecture._id.toString(),
+        title: lecture.title,
+        text,
+      }),
+    });
+
+    console.log(`[RAG] Indexed lecture: ${lecture._id} — ${lecture.title}`);
+  } catch (e) {
+    console.log("[RAG] Indexing error:", e.message);
+  }
+};
 
 exports.createLecture = async (req, res) => {
   try {
     const lecture = await Lecture.create(req.body);
 
+    // Index in RAG after creation
+    await indexLectureInRAG(lecture, req.body.transcript || "");
+
     const enrolledStudents = await User.find({ enrolledCourses: req.body.course });
 
-   
     if (enrolledStudents.length > 0) {
       const notificationPromises = enrolledStudents.map(async (student) => {
-        
-        
         await Notification.create({
           student: student._id,
           title: "New Lecture Uploaded! 📚",
           message: `A new lecture "${lecture.title}" has been added to your course.`,
-          type: "lecture"
+          type: "lecture",
         });
 
-       
         try {
           await sendEmail({
             to: student.email,
             subject: `New Content: ${lecture.title}`,
-            text: `Hi ${student.name},\n\nA new lecture has been uploaded: ${lecture.title}.\nLogin to your dashboard to watch it now!`
+            text: `Hi ${student.name},\n\nA new lecture has been uploaded: ${lecture.title}.\nLogin to your dashboard to watch it now!`,
           });
         } catch (mailErr) {
           console.error(`Email fail ho gaya ${student.email} ke liye:`, mailErr.message);
         }
       });
 
-      
       Promise.all(notificationPromises);
     }
 
@@ -44,39 +181,40 @@ exports.createLecture = async (req, res) => {
   }
 };
 
-exports.getLectures = async (req, res) => {
+exports.updateLecture = async (req, res) => {
   try {
-    let query = {};
+    const lecture = await Lecture.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!lecture) return res.status(404).json({ success: false, message: "Lecture not found" });
 
-   
-    if (req.user && req.user.role === "student") {
-      if (req.user.enrolledCourses && req.user.enrolledCourses.length > 0) {
-        
-        const courseIds = req.user.enrolledCourses.map(c => c._id);
-        query = { course: { $in: courseIds } };
-      } else {
-       
-        return res.json({ success: true, count: 0, lectures: [] });
-      }
-    }
+    // Re-index in RAG whenever lecture is updated
+    await indexLectureInRAG(lecture, req.body.transcript || "");
 
-    const lectures = await Lecture.find(query).sort({ createdAt: -1 }).populate("course");
-    
-    res.json({ 
-      success: true, 
-      count: lectures.length,
-      lectures: lectures 
-    });
+    res.json({ success: true, lecture });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 };
 
-exports.updateLecture = async (req, res) => {
+exports.getLectures = async (req, res) => {
   try {
-    const lecture = await Lecture.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!lecture) return res.status(404).json({ success: false, message: "Lecture not found" });
-    res.json({ success: true, lecture });
+    let query = {};
+
+    if (req.user && req.user.role === "student") {
+      if (req.user.enrolledCourses && req.user.enrolledCourses.length > 0) {
+        const courseIds = req.user.enrolledCourses.map((c) => c._id);
+        query = { course: { $in: courseIds } };
+      } else {
+        return res.json({ success: true, count: 0, lectures: [] });
+      }
+    }
+
+    const lectures = await Lecture.find(query).sort({ createdAt: -1 }).populate("course");
+
+    res.json({
+      success: true,
+      count: lectures.length,
+      lectures: lectures,
+    });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -86,6 +224,18 @@ exports.deleteLecture = async (req, res) => {
   try {
     const lecture = await Lecture.findByIdAndDelete(req.params.id);
     if (!lecture) return res.status(404).json({ success: false, message: "Lecture not found" });
+
+    // Delete from RAG index too
+    try {
+      await fetch(`http://localhost:8000/lecture/${req.params.id}`, {
+        method: "DELETE",
+        headers: { "X-RAG-Key": "rag-secret-key-change-in-prod" },
+      });
+      console.log(`[RAG] Deleted index for lecture: ${req.params.id}`);
+    } catch (e) {
+      console.log("[RAG] Delete index error:", e.message);
+    }
+
     res.json({ success: true, message: "Lecture deleted" });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });

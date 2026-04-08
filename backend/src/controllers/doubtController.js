@@ -10,6 +10,20 @@ exports.createDoubt = async (req, res) => {
     const studentId = req.user.id;
 
     let mentorId = null;
+    let autoAnswer = null;
+    
+    // RAG - Auto answer doubt
+    if (req.body.lectureId) {
+      try {
+        const res2 = await fetch('http://localhost:8000/auto-answer-doubt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-RAG-Key': 'rag-secret-key-change-in-prod' },
+          body: JSON.stringify({ lecture_id: req.body.lectureId, doubt: question, student_name: 'Student' })
+        });
+        const data = await res2.json();
+        autoAnswer = data.answer || null;
+      } catch (e) { console.log('RAG error:', e.message); }
+    }
 
     
     if (courseId) {
@@ -21,7 +35,7 @@ exports.createDoubt = async (req, res) => {
 
     
     const newDoubt = await Doubt.create({
-      studentId,
+      studentId, answer: autoAnswer,
       mentorId: mentorId || null,
       courseId: courseId || null,
       question,
@@ -136,4 +150,5 @@ exports.deleteDoubt = async (req, res) => {
     res.status(500).json({ success: false, message: "Server Error: " + error.message });
   }
 };
+
 

@@ -5,8 +5,28 @@ const mongoose = require("mongoose");
 
 exports.createQuiz = async (req, res) => {
   try {
-    const { title, course, questions, duration } = req.body;
-    const newQuiz = new Quiz({ title, course, questions, duration });
+    const { title, course, questions, duration, lectureId } = req.body;
+    
+    // RAG - Auto generate quiz
+    let finalQuestions = questions;
+    if (lectureId) {
+      try {
+        const res2 = await fetch('http://localhost:8000/generate-quiz', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-RAG-Key': 'rag-secret-key-change-in-prod' },
+          body: JSON.stringify({ lecture_id: lectureId, num_questions: 5 })
+        });
+        const data = await res2.json();
+        if (data.questions) {
+          finalQuestions = data.questions.map(q => ({
+            text: q.question,
+            options: [q.options.A, q.options.B, q.options.C, q.options.D],
+            correctAnswer: q.correct_answer
+          }));
+        }
+      } catch (e) { console.log('RAG error:', e.message); }
+    }
+    const newQuiz = new Quiz({ title, course, questions: finalQuestions, duration });
     await newQuiz.save();
     res.status(201).json({ success: true, message: "Quiz created successfully!" });
   } catch (error) {
@@ -17,7 +37,27 @@ exports.createQuiz = async (req, res) => {
 
 exports.updateQuiz = async (req, res) => {
   try {
-    const { title, course, questions, duration } = req.body;
+    const { title, course, questions, duration, lectureId } = req.body;
+    
+    // RAG - Auto generate quiz
+    let finalQuestions = questions;
+    if (lectureId) {
+      try {
+        const res2 = await fetch('http://localhost:8000/generate-quiz', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-RAG-Key': 'rag-secret-key-change-in-prod' },
+          body: JSON.stringify({ lecture_id: lectureId, num_questions: 5 })
+        });
+        const data = await res2.json();
+        if (data.questions) {
+          finalQuestions = data.questions.map(q => ({
+            text: q.question,
+            options: [q.options.A, q.options.B, q.options.C, q.options.D],
+            correctAnswer: q.correct_answer
+          }));
+        }
+      } catch (e) { console.log('RAG error:', e.message); }
+    }
     const updatedQuiz = await Quiz.findByIdAndUpdate(
       req.params.id,
       { title, course, questions, duration },
