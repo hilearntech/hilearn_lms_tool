@@ -165,7 +165,7 @@ async def index_text(req: IndexTextRequest):
 
         summary = call_groq([
             {"role": "system", "content": (
-                "You are an educational assistant. Summarize the lecture transcript "
+                "You are an educational assistant. Always respond in English only. Summarize the lecture transcript "
                 "in 5-7 clear bullet points covering key concepts and learning outcomes."
             )},
             {"role": "user", "content": f"Title: {req.title}\n\nTranscript:\n{req.text[:4000]}"}
@@ -250,7 +250,7 @@ async def ask(req: QuestionRequest):
         context = "\n\n".join(results["documents"][0])
         answer  = call_groq([
             {"role": "system", "content": (
-                "You are an intelligent tutor. Answer the student's question based ONLY "
+                "You are an intelligent tutor. Always respond in English only. Answer the student's question based ONLY "
                 "on the provided lecture content. If the answer is not in the content, "
                 "say: 'This topic was not covered in the lecture.' Be clear and educational."
             )},
@@ -278,7 +278,7 @@ async def get_summary(lecture_id: str):
         title     = results["metadatas"][0].get("title", "Lecture") if results["metadatas"] else "Lecture"
 
         summary = call_groq([
-            {"role": "system", "content": "Summarize the lecture in 5-7 bullet points covering key concepts."},
+            {"role": "system", "content": "You are an educational assistant. Always respond in English only. Summarize the lecture in 5-7 bullet points covering key concepts."},
             {"role": "user", "content": f"Title: {title}\n\nContent:\n{full_text[:4000]}"}
         ])
 
