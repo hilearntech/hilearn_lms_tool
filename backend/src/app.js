@@ -13,7 +13,7 @@ const sendEmail = require("./utils/sendEmail");
 const courseRoutes = require("./routes/courseRoutes");
 const materialRoutes = require("./routes/materialRoutes");
 const attendanceRoutes = require("./routes/attendanceRoutes");
-const zoomRoutes = require('./routes/zoomRoutes');
+const bbbRoutes = require('./routes/bbbRoutes');
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes.js");
 const studentRoutes = require("./routes/studentRoutes.js");
@@ -47,11 +47,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-app.use((req, res, next) => {
-  res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-  next();
-});
-app.use('/api/zoom', zoomRoutes);
+app.use('/api/bbb', bbbRoutes);
 
 // --- Routes Section ---
 app.use("/api/auth", authRoutes);

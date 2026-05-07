@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BookOpen, Video, Clock, PlayCircle, Calendar, Megaphone, Award, ArrowRight, Loader2, X, Download } from "lucide-react";
 import axios from "axios";
 
-import ZoomMeeting from "../../../component/ZoomMeeting";
+import BBBMeeting from "../../../component/BBBMeeting";
 
 const StudentDashboard = () => {
   const [data, setData] = useState({
@@ -245,25 +245,16 @@ const StudentDashboard = () => {
                     <h5 className="font-bold text-slate-800 text-sm">{live.topic}</h5>
 
 
-                    {live.zoomDetails?.meeting_id ? (
+                    {live.meetingLink ? (
                       <button
                         onClick={() => setActiveLiveLecture(live)}
                         className="mt-3 block w-full py-2 text-center bg-[#059669] text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-900 transition-all shadow-md active:scale-95"
                       >
-                        Join Zoom Class
+                        Join Live Class
                       </button>
-                    ) : live.meetingLink ? (
-                      <a
-                        href={live.meetingLink.startsWith('http') ? live.meetingLink : `https://${live.meetingLink}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-3 block w-full py-2 text-center bg-white border border-emerald-200 rounded-xl text-xs font-bold text-[#059669] hover:bg-[#059669] hover:text-white transition-all shadow-sm"
-                      >
-                        Join via Link
-                      </a>
                     ) : (
-                      <button className="mt-3 block w-full py-2 text-center bg-slate-100 text-slate-400 border border-slate-200 rounded-xl text-xs font-bold cursor-not-allowed uppercase">
-                        Link TBA
+                      <button className="mt-3 block w-full py-2 text-center bg-amber-50 text-amber-500 border border-amber-200 rounded-xl text-xs font-bold cursor-not-allowed uppercase">
+                        Class not started yet
                       </button>
                     )}
                   </div>
@@ -280,14 +271,10 @@ const StudentDashboard = () => {
 
 
       {activeLiveLecture && (
-        <ZoomMeeting
+        <BBBMeeting
           user={JSON.parse(localStorage.getItem("user"))}
-          meetingDetails={{
-            number: activeLiveLecture.zoomDetails?.meeting_id,
-            password: activeLiveLecture.zoomDetails?.password,
-            title: activeLiveLecture.topic,
-            id: activeLiveLecture.id
-          }}
+          lectureId={activeLiveLecture.id}
+          lectureTitle={activeLiveLecture.topic}
           onClose={() => setActiveLiveLecture(null)}
         />
       )}

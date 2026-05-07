@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Calendar, Clock, Video, Loader2, VideoOff } from "lucide-react";
-import ZoomMeeting from "../../../component/ZoomMeeting";
+import BBBMeeting from "../../../component/BBBMeeting";
 
 const Schedule = () => {
   const [schedules, setSchedules] = useState([]);
@@ -112,27 +112,14 @@ const Schedule = () => {
                     {lecture.meetingLink ? (
                       <button
                         onClick={() => setActiveLecture(lecture)}
-
                         className="bg-slate-900 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#059669] transition-all shadow-lg active:scale-95 flex items-center gap-2 ml-auto"
                       >
-                        <Video size={14} /> Join Class
+                        <Video size={14} /> Join Live Class
                       </button>
                     ) : (
-                      <span className="text-[10px] font-bold text-slate-300 italic uppercase">Link TBA</span>
-                    )}
-
-                    {activeLecture && (
-                      <ZoomMeeting
-
-                        user={JSON.parse(localStorage.getItem("user"))}
-                        meetingDetails={{
-                          number: activeLecture.zoomDetails?.meeting_id,
-                          password: activeLecture.zoomDetails?.password,
-                          title: activeLecture.title,
-                          id: activeLecture._id
-                        }}
-                        onClose={() => setActiveLecture(null)}
-                      />
+                      <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-amber-500 italic uppercase bg-amber-50 px-3 py-1.5 rounded-lg">
+                        <Clock size={12} /> Class not started yet
+                      </span>
                     )}
                   </td>
                 </tr>
@@ -150,6 +137,16 @@ const Schedule = () => {
           </tbody>
         </table>
       </div>
+
+      {/* BBB Meeting Modal — rendered outside table */}
+      {activeLecture && (
+        <BBBMeeting
+          user={JSON.parse(localStorage.getItem("user"))}
+          lectureId={activeLecture._id}
+          lectureTitle={activeLecture.title}
+          onClose={() => setActiveLecture(null)}
+        />
+      )}
     </div>
   );
 };

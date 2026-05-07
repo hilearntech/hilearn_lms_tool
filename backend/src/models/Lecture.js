@@ -29,10 +29,16 @@ const lectureSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
-    zoomDetails: {
-        start_url: { type: String },
-        meeting_id: { type: String },
-        password: { type: String }
+    bbbMeetingID: {
+        type: String,
+        default: ""
+    },
+    bbbDetails: {
+        meetingID: { type: String },
+        moderatorPW: { type: String },
+        attendeePW: { type: String },
+        moderator_url: { type: String },
+        join_url: { type: String }
     },
     videoID:
     {

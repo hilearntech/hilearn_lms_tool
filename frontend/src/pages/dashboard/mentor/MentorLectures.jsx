@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../../services/api";
 import { Clock, Play, FolderOpen, Radio, Loader2, Calendar, X, Plus } from "lucide-react";
 import AddEditLecture from "../admin/lectures/AddEditLecture";
 import AddMaterialModal from "../admin/materials/AddEditMaterial";
@@ -51,17 +51,26 @@ const MentorLectures = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const [startingClass, setStartingClass] = useState(null);
+
   const handleStartClass = async (lectureId) => {
     try {
-      const response = await axios.post(`https://hilearnlmstool-production.up.railway.app/api/zoom/start-meeting/${lectureId}`);
-      if (response.data.start_url) {
-        window.open(response.data.start_url, "_blank");
+      setStartingClass(lectureId);
+      const response = await api.post(`/bbb/create-meeting/${lectureId}`);
+      if (response.data.moderator_url) {
+        window.open(response.data.moderator_url, "_blank");
         setLectures(prev => prev.map(l =>
           l._id === lectureId ? { ...l, meetingLink: response.data.join_url } : l
         ));
+      } else {
+        alert("Meeting created but no moderator URL returned.");
       }
     } catch (error) {
       console.error("Error starting class:", error);
+      const msg = error.response?.data?.message || error.message || "Unknown error";
+      alert(`Failed to start class: ${msg}`);
+    } finally {
+      setStartingClass(null);
     }
   };
 
@@ -102,8 +111,16 @@ const MentorLectures = () => {
       </div>
       <div className="mt-auto space-y-2">
         {l.lectureType === 'live' && (
-          <button onClick={() => handleStartClass(l._id)} className="w-full py-2.5 bg-rose-600 text-white rounded-xl font-bold text-[11px] uppercase flex items-center justify-center gap-2 hover:bg-rose-700">
-            <Radio size={14} /> Start & Join Live
+          <button
+            onClick={() => handleStartClass(l._id)}
+            disabled={startingClass === l._id}
+            className="w-full py-2.5 bg-rose-600 text-white rounded-xl font-bold text-[11px] uppercase flex items-center justify-center gap-2 hover:bg-rose-700 disabled:opacity-60"
+          >
+            {startingClass === l._id ? (
+              <><Loader2 size={14} className="animate-spin" /> Starting...</>
+            ) : (
+              <><Radio size={14} /> Start & Join Live</>
+            )}
           </button>
         )}
         {l.lectureType === 'video' && (l.videoID || l.videoUrl) && (

@@ -88,9 +88,9 @@ if (lastLecture) {
         date: new Date(live.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
         time: live.startTime || "TBA",
         meetingLink: live.meetingLink || live.videoUrl,
-        zoomDetails: live.zoomDetails ? { 
-          meeting_id: live.zoomDetails.meeting_id,
-          password: live.zoomDetails.password
+        bbbDetails: live.bbbDetails ? {
+          meetingID: live.bbbDetails.meetingID,
+          attendeePW: live.bbbDetails.attendeePW
         } : null
       })),
       certificates: student.certificates || []

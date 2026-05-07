@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Clock, Search, Plus, X, Play, FolderOpen, Edit3, Trash2, Video, Radio, FileText, HelpCircle, Layers, ExternalLink } from "lucide-react";
+import { Clock, Search, Plus, X, Play, FolderOpen, Edit3, Trash2, Video, Radio, FileText, HelpCircle, Layers, Loader2 } from "lucide-react";
+import api from "../../../../services/api";
 import AddEditLecture from "./AddEditLecture";
 import AddMaterialModal from "./AddMaterialModal";
 
@@ -14,6 +15,7 @@ const LectureList = () => {
   const [loading, setLoading] = useState(true);
   const [selectedLecture, setSelectedLecture] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState("");
+  const [startingMeeting, setStartingMeeting] = useState(null);
 
   const fetchLectures = async () => {
     try {
@@ -65,6 +67,27 @@ const LectureList = () => {
     setEditData(lecture);
     setIsFormOpen(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleStartMeeting = async (lectureId) => {
+    try {
+      setStartingMeeting(lectureId);
+      const response = await api.post(`/bbb/create-meeting/${lectureId}`);
+      if (response.data.moderator_url) {
+        window.open(response.data.moderator_url, "_blank");
+        setLectures(prev => prev.map(l =>
+          l._id === lectureId ? { ...l, meetingLink: response.data.join_url } : l
+        ));
+      } else {
+        alert("Meeting created but no moderator URL returned.");
+      }
+    } catch (error) {
+      console.error("Error starting meeting:", error);
+      const msg = error.response?.data?.message || error.message || "Unknown error";
+      alert(`Failed to start meeting: ${msg}`);
+    } finally {
+      setStartingMeeting(null);
+    }
   };
 
   const filteredLectures = lectures.filter((l) => {
@@ -193,12 +216,33 @@ const LectureList = () => {
                   </button>
                 )}
 
+                {/* LIVE CLASS — Start Meeting (creates BBB meeting on-demand) */}
+                {l.lectureType === 'live' && !l.meetingLink && (
+                  <button
+                    onClick={() => handleStartMeeting(l._id)}
+                    disabled={startingMeeting === l._id}
+                    className="w-full py-2.5 bg-rose-600 text-white rounded-xl font-bold text-[11px] uppercase tracking-wider hover:bg-rose-700 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+                  >
+                    {startingMeeting === l._id ? (
+                      <><Loader2 size={14} className="animate-spin" /> Starting...</>
+                    ) : (
+                      <><Radio size={14} /> Start Meeting</>
+                    )}
+                  </button>
+                )}
+
+                {/* LIVE CLASS — Join existing meeting as Host */}
                 {l.lectureType === 'live' && l.meetingLink && (
                   <button
-                    onClick={() => window.open(l.meetingLink, "_blank")}
-                    className="w-full py-2.5 bg-rose-600 text-white rounded-xl font-bold text-[11px] uppercase tracking-wider hover:bg-rose-700 transition-all flex items-center justify-center gap-2"
+                    onClick={() => handleStartMeeting(l._id)}
+                    disabled={startingMeeting === l._id}
+                    className="w-full py-2.5 bg-rose-600 text-white rounded-xl font-bold text-[11px] uppercase tracking-wider hover:bg-rose-700 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
                   >
-                    <Radio size={14} /> Join Live Class
+                    {startingMeeting === l._id ? (
+                      <><Loader2 size={14} className="animate-spin" /> Joining...</>
+                    ) : (
+                      <><Radio size={14} /> Join as Host</>
+                    )}
                   </button>
                 )}
 

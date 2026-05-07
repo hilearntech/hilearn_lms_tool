@@ -4,7 +4,7 @@ const QuizResult = require("../models/QuizResult");
 const LectureProgress = require("../models/LectureProgress");
 const Assignment = require("../models/Assignment"); 
 const mongoose = require("mongoose");
-const zoomService = require('../servic/zoomService');
+const bbbService = require('../servic/bbbService');
 const Notification = require("../models/Notification");
 const sendEmail = require("../utils/sendEmail");
 
@@ -212,18 +212,23 @@ exports.createAssignment = async (req, res) => {
 
 exports.createLiveLecture = async (req, res) => {
   try {
-    const { title, date, startTime, duration } = req.body;
-    
-    const fullISOString = `${date.split('T')[0]}T${startTime}:00Z`;
+    const { title, date, startTime, duration, course } = req.body;
 
-    const zoomData = await zoomService.createMeeting(title, fullISOString, duration);
-
+    // Create lecture first to get the _id for meetingID
     const newLecture = await Lecture.create({
       ...req.body,
-      meetingLink: zoomData.join_url, 
-      zoomDetails: zoomData,
       mentor: req.user._id
     });
+
+    // Create BBB meeting
+    const meetingID = `hilearn-${newLecture._id}-${Date.now()}`;
+    const bbbData = await bbbService.createMeeting(meetingID, title);
+
+    // Update lecture with BBB details
+    newLecture.meetingLink = bbbData.join_url;
+    newLecture.bbbMeetingID = bbbData.meetingID;
+    newLecture.bbbDetails = bbbData;
+    await newLecture.save();
 
     const students = await User.find({ enrolledCourses: course });
     
