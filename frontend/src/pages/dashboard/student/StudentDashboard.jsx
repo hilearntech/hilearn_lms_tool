@@ -238,8 +238,8 @@ const StudentDashboard = () => {
               Upcoming Live Classes <Calendar size={14} />
             </h3>
             <div className="space-y-4">
-              {data.upcomingLiveClasses.length > 0 ? (
-                data.upcomingLiveClasses.map((live, idx) => (
+              {data.upcomingLiveClasses.filter(live => !live.isEnded).length > 0 ? (
+                data.upcomingLiveClasses.filter(live => !live.isEnded).map((live, idx) => (
                   <div key={idx} className="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100">
                     <p className="text-[10px] font-bold text-[#059669] mb-1">{live.time} • {live.date}</p>
                     <h5 className="font-bold text-slate-800 text-sm">{live.topic}</h5>

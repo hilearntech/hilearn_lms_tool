@@ -33,7 +33,8 @@ exports.getStudentDashboardData = async (req, res) => {
     const upcomingLive = await Lecture.find({
       course: { $in: courseIds },
       lectureType: "live",
-      date: { $gte: new Date(today).toISOString() } 
+      date: { $gte: new Date(today).toISOString() },
+      isEnded: { $ne: true }
     })
     .populate("course", "title") 
     .sort({ date: 1, startTime: 1 }) 

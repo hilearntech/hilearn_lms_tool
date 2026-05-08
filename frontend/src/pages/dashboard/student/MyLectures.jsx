@@ -9,13 +9,20 @@ import {
   Download,
   CheckCircle,
   Calendar,
+  Radio,
+  Clock,
+  Video,
+  FolderOpen,
 } from "lucide-react";
+import BBBMeeting from "../../../component/BBBMeeting";
 
 const MyLectures = () => {
   const [lectures, setLectures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedVideo, setSelectedVideo] = useState("");
   const [completedLectures, setCompletedLectures] = useState([]);
+  const [liveLectures, setLiveLectures] = useState([]);
+  const [activeLiveLecture, setActiveLiveLecture] = useState(null);
 
   const [showMaterials, setShowMaterials] = useState(false);
   const [currentMaterials, setCurrentMaterials] = useState([]);
@@ -40,6 +47,7 @@ const MyLectures = () => {
       });
       if (res.data.success) {
         setLectures(res.data.lectures.filter(l => l.lectureType?.toLowerCase() === "video"));
+        setLiveLectures(res.data.lectures.filter(l => l.lectureType?.toLowerCase() === "live"));
       }
 
 
@@ -206,6 +214,90 @@ const MyLectures = () => {
             })}
           </div>
         )}
+
+        {/* ===== LIVE CLASSES SECTION ===== */}
+        {liveLectures.length > 0 && (
+          <div className="mt-14">
+            <div className="flex items-center gap-4 mb-10 border-b border-slate-200 pb-6">
+              <div className="w-2 h-10 bg-rose-500 rounded-full"></div>
+              <h2 className="text-3xl font-black text-slate-800">
+                Live Classes <span className="text-rose-500">({liveLectures.filter(l => !l.isEnded).length})</span>
+              </h2>
+            </div>
+
+            {/* Upcoming Live */}
+            {liveLectures.filter(l => !l.isEnded).length > 0 && (
+              <div className="mb-10">
+                <h3 className="text-lg font-bold text-slate-800 mb-5 flex items-center gap-2">
+                  <div className="w-2 h-5 bg-emerald-500 rounded-full"></div> Upcoming Live
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {liveLectures.filter(l => !l.isEnded).map(l => (
+                    <div key={l._id} className="bg-white rounded-[24px] border border-slate-200 p-6 shadow-sm hover:-translate-y-1 hover:shadow-md transition-all">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
+                          <Radio size={20} className="text-rose-500" />
+                        </div>
+                        <span className="text-[10px] font-black text-rose-500 uppercase bg-rose-50 px-2 py-1 rounded-lg">{l.course?.title || 'Live'}</span>
+                      </div>
+                      <h4 className="font-bold text-slate-800 text-lg mb-3">{l.title}</h4>
+                      <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase mb-5">
+                        <Calendar size={12} className="text-emerald-500" />
+                        {l.date ? new Date(l.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : 'TBA'}
+                        <span>•</span>
+                        <Clock size={12} /> {l.startTime || 'TBA'}
+                      </div>
+                      {l.meetingLink ? (
+                        <button onClick={() => setActiveLiveLecture(l)} className="w-full py-3 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all flex items-center justify-center gap-2">
+                          <Video size={14} /> Join Live Class
+                        </button>
+                      ) : (
+                        <button className="w-full py-3 bg-amber-50 text-amber-500 border border-amber-200 rounded-2xl font-bold text-xs uppercase cursor-not-allowed flex items-center justify-center gap-2">
+                          <Clock size={14} /> Not Started Yet
+                        </button>
+                      )}
+                      <button onClick={() => handleOpenMaterials(l._id, l.title)} className="mt-2 w-full py-2.5 bg-slate-100 text-slate-600 rounded-xl font-bold text-[10px] uppercase hover:bg-emerald-50 hover:text-emerald-600 transition-colors flex items-center justify-center gap-2">
+                        <FolderOpen size={14} /> Materials
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Past Live */}
+            {liveLectures.filter(l => l.isEnded).length > 0 && (
+              <div>
+                <h3 className="text-lg font-bold text-slate-400 mb-5 flex items-center gap-2">
+                  <div className="w-2 h-5 bg-slate-300 rounded-full"></div> Past Live Classes
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {liveLectures.filter(l => l.isEnded).map(l => (
+                    <div key={l._id} className="bg-white rounded-[24px] border border-slate-200 p-6 shadow-sm opacity-60 grayscale-[0.5]">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+                          <Radio size={20} className="text-slate-400" />
+                        </div>
+                        <span className="text-[10px] font-black text-slate-400 uppercase bg-slate-50 px-2 py-1 rounded-lg">{l.course?.title || 'Live'}</span>
+                      </div>
+                      <h4 className="font-bold text-slate-600 text-lg mb-3">{l.title}</h4>
+                      <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase mb-5">
+                        <Calendar size={12} />
+                        {l.date ? new Date(l.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : 'TBA'}
+                        <span>•</span>
+                        <Clock size={12} /> {l.startTime || 'TBA'}
+                      </div>
+                      <div className="w-full py-3 bg-slate-100 text-slate-400 rounded-2xl font-bold text-xs uppercase text-center">Session Ended</div>
+                      <button onClick={() => handleOpenMaterials(l._id, l.title)} className="mt-2 w-full py-2.5 bg-slate-100 text-slate-500 rounded-xl font-bold text-[10px] uppercase hover:bg-slate-200 transition-colors flex items-center justify-center gap-2">
+                        <FolderOpen size={14} /> Materials
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Materials Modal */}
@@ -265,6 +357,16 @@ const MyLectures = () => {
             />
           </div>
         </div>
+      )}
+
+      {/* BBB Meeting Modal */}
+      {activeLiveLecture && (
+        <BBBMeeting
+          user={JSON.parse(localStorage.getItem("user"))}
+          lectureId={activeLiveLecture._id}
+          lectureTitle={activeLiveLecture.title}
+          onClose={() => setActiveLiveLecture(null)}
+        />
       )}
     </div>
   );
