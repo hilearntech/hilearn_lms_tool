@@ -51,6 +51,9 @@ router.post('/create-meeting/:lectureId', async (req, res) => {
       join_url: bbbData.join_url,
     };
     await lecture.save();
+    console.log(`[BBB-CREATE] ✅ Saved lecture "${lecture.title}" with bbbMeetingID: ${lecture.bbbMeetingID}`);
+    console.log(`[BBB-CREATE]    meetingLink: ${lecture.meetingLink}`);
+    console.log(`[BBB-CREATE]    isEnded: ${lecture.isEnded}`);
 
     res.json({ moderator_url: bbbData.moderator_url, join_url: bbbData.join_url });
   } catch (error) {

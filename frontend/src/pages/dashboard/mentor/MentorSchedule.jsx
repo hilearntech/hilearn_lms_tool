@@ -21,7 +21,7 @@ const MentorSchedule = () => {
        
         const upcomingLive = res.data.lectures.filter(l => {
           const lecDate = new Date(l.date);
-          return l.lectureType === 'live' && lecDate >= today;
+          return l.lectureType === 'live' && lecDate >= today && !l.isEnded;
         });
 
         

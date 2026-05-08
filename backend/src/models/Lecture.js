@@ -77,6 +77,10 @@ const lectureSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    isEnded: {
+        type: Boolean,
+        default: false
+    },
 }, { timestamps: true });
 
 module.exports = mongoose.model("Lecture", lectureSchema);

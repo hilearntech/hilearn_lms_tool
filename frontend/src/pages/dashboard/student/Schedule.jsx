@@ -37,7 +37,7 @@ const Schedule = () => {
 
           const liveOnly = allLectures.filter((l) => {
             const lectureDate = new Date(l.date).setHours(0, 0, 0, 0);
-            return l.lectureType === "live" && lectureDate >= today;
+            return l.lectureType === "live" && lectureDate >= today && !l.isEnded;
           });
 
 

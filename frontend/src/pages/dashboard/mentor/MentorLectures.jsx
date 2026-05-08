@@ -87,8 +87,8 @@ const MentorLectures = () => {
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const upcoming = lectures.filter(l => new Date(l.date || new Date()) >= today);
-  const past = lectures.filter(l => new Date(l.date || new Date()) < today);
+  const upcoming = lectures.filter(l => !l.isEnded && new Date(l.date || new Date()) >= today);
+  const past = lectures.filter(l => l.isEnded || new Date(l.date || new Date()) < today);
 
   const LectureCard = ({ l, isPast }) => (
     <div className={`group bg-white rounded-3xl border border-slate-100 p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full ${isPast ? 'opacity-70 grayscale-[0.5]' : ''}`}>

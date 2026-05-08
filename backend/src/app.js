@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
+const crypto = require("crypto");
 const User = require("./models/User");
 const bcrypt = require("bcryptjs");
 const cron = require("node-cron");
@@ -163,6 +164,71 @@ cron.schedule("*/5 * * * *", async () => {
     }
   } catch (err) {
     console.error("Cron Job Error:", err);
+  }
+});
+
+// --- AUTOMATION: CHECK BBB MEETING STATUS (EVERY 2 MINS) ---
+cron.schedule("*/2 * * * *", async () => {
+  console.log("\n[CRON] ========== BBB check running... ==========", new Date().toISOString());
+  try {
+    const activeLiveLectures = await Lecture.find({
+      lectureType: "live",
+      bbbMeetingID: { $exists: true, $ne: "" },
+      isEnded: { $ne: true }
+    });
+
+    console.log(`[CRON] Found ${activeLiveLectures.length} active live lecture(s) to check`);
+
+    if (activeLiveLectures.length === 0) {
+      console.log("[CRON] No lectures with bbbMeetingID found. Possible reasons:");
+      console.log("       - No live lectures exist yet");
+      console.log("       - bbbMeetingID is empty/not saved");
+      console.log("       - All lectures already have isEnded=true");
+
+      // Debug: show ALL live lectures regardless of filters
+      const allLive = await Lecture.find({ lectureType: "live" }).select("title bbbMeetingID isEnded");
+      console.log("[CRON] All live lectures in DB:", JSON.stringify(allLive, null, 2));
+    }
+
+    for (const lecture of activeLiveLectures) {
+      try {
+        console.log(`\n[CRON] Checking: "${lecture.title}"`);
+        console.log(`[CRON]   bbbMeetingID: ${lecture.bbbMeetingID}`);
+        console.log(`[CRON]   isEnded: ${lecture.isEnded}`);
+        console.log(`[CRON]   BBB_URL env: ${process.env.BBB_URL || "(NOT SET)"}`);
+        console.log(`[CRON]   BBB_SECRET env: ${process.env.BBB_SECRET ? "SET (" + process.env.BBB_SECRET.length + " chars)" : "(NOT SET)"}`);
+
+        const params = `meetingID=${encodeURIComponent(lecture.bbbMeetingID)}`;
+        const checksum = crypto
+          .createHash("sha256")
+          .update("isMeetingRunning" + params + process.env.BBB_SECRET)
+          .digest("hex");
+        const url = `${process.env.BBB_URL}/api/isMeetingRunning?${params}&checksum=${checksum}`;
+
+        console.log(`[CRON]   API URL: ${url}`);
+
+        const response = await fetch(url);
+        const text = await response.text();
+
+        console.log(`[CRON]   HTTP Status: ${response.status}`);
+        console.log(`[CRON]   Raw XML Response: ${text}`);
+
+        if (text.includes("<running>false</running>")) {
+          lecture.isEnded = true;
+          await lecture.save();
+          console.log(`[CRON]   ✅ MATCH — Marked lecture as ENDED: ${lecture.title}`);
+        } else if (text.includes("<running>true</running>")) {
+          console.log(`[CRON]   🟢 Meeting is still RUNNING`);
+        } else {
+          console.log(`[CRON]   ❓ Unexpected response — no <running> tag found`);
+        }
+      } catch (e) {
+        console.log(`[CRON]   ⚠️ BBB check FAILED for "${lecture.title}":`, e.message);
+      }
+    }
+    console.log("[CRON] ========== BBB check complete ==========\n");
+  } catch (err) {
+    console.error("[CRON] BBB Cron Job Error:", err);
   }
 });
 

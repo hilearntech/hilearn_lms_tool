@@ -90,11 +90,14 @@ const LectureList = () => {
     }
   };
 
-  const filteredLectures = lectures.filter((l) => {
+  const searchFiltered = lectures.filter((l) => {
     const matchesSearch = l.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filterValue === "" || l.course?._id === filterValue;
     return matchesSearch && matchesFilter;
   });
+
+  const activeLectures = searchFiltered.filter(l => !l.isEnded);
+  const pastLectures = searchFiltered.filter(l => l.isEnded);
 
   const uniqueCourses = Array.from(new Set(lectures.map((l) => l.course?._id)))
     .map((id) => lectures.find((l) => l.course?._id === id)?.course)
@@ -109,6 +112,109 @@ const LectureList = () => {
       default: return <Video size={22} className={className} />;
     }
   };
+
+  const LectureCard = ({ l, isPast }) => (
+    <div
+      className={`group bg-white rounded-3xl border border-slate-100 p-5 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full ${isPast ? 'opacity-70 grayscale-[0.5]' : ''}`}
+    >
+      <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 bg-emerald-50 border border-emerald-100">
+        {getLectureIcon(l.lectureType)}
+      </div>
+
+      <div className="flex-grow">
+        <h3 className="text-lg font-bold text-slate-800 leading-snug mb-2 group-hover:text-[#059669] transition-colors">
+          {l.title}
+        </h3>
+
+        <p className="text-slate-500 text-[13px] leading-relaxed mb-4 line-clamp-2">
+          {l.description || "Course module focusing on core concepts and practical implementation."}
+        </p>
+
+        <div className="flex items-center gap-3 text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-6">
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-50 rounded-lg">
+            <Clock size={12} className="text-[#059669]" /> {l.duration} Mins
+          </div>
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-50 rounded-lg">
+            <Layers size={12} className="text-[#059669]" /> {l.lectureType || 'video'}
+          </div>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="space-y-2 mt-auto pt-4 border-t border-slate-50">
+
+        {/* BUNNY.NET VIDEO PREVIEW */}
+        {l.lectureType === 'video' && (l.videoID || l.videoUrl) && (
+          <button
+            onClick={() => setSelectedVideo(`https://iframe.mediadelivery.net/embed/${l.libraryID || '592909'}/${l.videoID || l.videoUrl}?autoplay=true`)}
+            className="w-full py-2.5 bg-[#059669] text-white rounded-xl font-bold text-[11px] uppercase tracking-wider hover:bg-[#047857] transition-all flex items-center justify-center gap-2"
+          >
+            <Play size={14} fill="white" /> Preview Video
+          </button>
+        )}
+
+        {/* LIVE CLASS — Start Meeting (creates BBB meeting on-demand) */}
+        {l.lectureType === 'live' && !l.meetingLink && (
+          <button
+            onClick={() => handleStartMeeting(l._id)}
+            disabled={startingMeeting === l._id}
+            className="w-full py-2.5 bg-rose-600 text-white rounded-xl font-bold text-[11px] uppercase tracking-wider hover:bg-rose-700 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+          >
+            {startingMeeting === l._id ? (
+              <><Loader2 size={14} className="animate-spin" /> Starting...</>
+            ) : (
+              <><Radio size={14} /> Start Meeting</>
+            )}
+          </button>
+        )}
+
+        {/* LIVE CLASS — Join existing meeting as Host */}
+        {l.lectureType === 'live' && l.meetingLink && (
+          <button
+            onClick={() => handleStartMeeting(l._id)}
+            disabled={startingMeeting === l._id}
+            className="w-full py-2.5 bg-rose-600 text-white rounded-xl font-bold text-[11px] uppercase tracking-wider hover:bg-rose-700 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+          >
+            {startingMeeting === l._id ? (
+              <><Loader2 size={14} className="animate-spin" /> Joining...</>
+            ) : (
+              <><Radio size={14} /> Join as Host</>
+            )}
+          </button>
+        )}
+
+        {l.lectureType === 'article' && (
+          <button
+            className="w-full py-2.5 bg-amber-500 text-white rounded-xl font-bold text-[11px] uppercase tracking-wider hover:bg-amber-600 transition-all flex items-center justify-center gap-2"
+          >
+            <FileText size={14} /> Read Article
+          </button>
+        )}
+
+        <button
+          onClick={() => setSelectedLecture(l)}
+          className="w-full py-2.5 bg-slate-800 text-white rounded-xl font-bold text-[11px] uppercase tracking-wider hover:bg-black transition-all flex items-center justify-center gap-2"
+        >
+          <FolderOpen size={14} /> Materials
+        </button>
+
+        <div className="flex gap-2">
+          <button
+            onClick={() => handleEdit(l)}
+            className="flex-1 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg font-bold text-[10px] uppercase hover:bg-slate-50 transition-all flex items-center justify-center gap-1"
+          >
+            <Edit3 size={12} /> Edit
+          </button>
+          <button
+            onClick={() => deleteLecture(l._id)}
+            className="flex-1 py-2 bg-white border border-slate-200 text-rose-500 rounded-lg font-bold text-[10px] uppercase hover:bg-rose-50 transition-all flex items-center justify-center gap-1"
+          >
+            <Trash2 size={12} /> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8 bg-slate-50 min-h-screen font-sans">
@@ -174,119 +280,31 @@ const LectureList = () => {
           <div className="w-10 h-10 border-4 border-[#059669] border-t-transparent rounded-full animate-spin"></div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredLectures.map((l) => (
-            <div
-              key={l._id}
-              className="group bg-white rounded-3xl border border-slate-100 p-5 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full"
-            >
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 bg-emerald-50 border border-emerald-100">
-                {getLectureIcon(l.lectureType)}
-              </div>
+        <>
+          {/* Active Lectures Section */}
+          <div className="mb-12">
+            <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+              <div className="w-2 h-6 bg-[#059669] rounded-full"></div> Active Lectures
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {activeLectures.length > 0 ? activeLectures.map(l => <LectureCard key={l._id} l={l} isPast={false} />) : (
+                <p className="text-slate-400 italic text-sm">No active lectures found.</p>
+              )}
+            </div>
+          </div>
 
-              <div className="flex-grow">
-                <h3 className="text-lg font-bold text-slate-800 leading-snug mb-2 group-hover:text-[#059669] transition-colors">
-                  {l.title}
-                </h3>
-
-                <p className="text-slate-500 text-[13px] leading-relaxed mb-4 line-clamp-2">
-                  {l.description || "Course module focusing on core concepts and practical implementation."}
-                </p>
-
-                <div className="flex items-center gap-3 text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-6">
-                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-50 rounded-lg">
-                    <Clock size={12} className="text-[#059669]" /> {l.duration} Mins
-                  </div>
-                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-50 rounded-lg">
-                    <Layers size={12} className="text-[#059669]" /> {l.lectureType || 'video'}
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-2 mt-auto pt-4 border-t border-slate-50">
-
-                {/* BUNNY.NET VIDEO PREVIEW */}
-                {l.lectureType === 'video' && (l.videoID || l.videoUrl) && (
-                  <button
-                    onClick={() => setSelectedVideo(`https://iframe.mediadelivery.net/embed/${l.libraryID || '592909'}/${l.videoID || l.videoUrl}?autoplay=true`)}
-                    className="w-full py-2.5 bg-[#059669] text-white rounded-xl font-bold text-[11px] uppercase tracking-wider hover:bg-[#047857] transition-all flex items-center justify-center gap-2"
-                  >
-                    <Play size={14} fill="white" /> Preview Video
-                  </button>
-                )}
-
-                {/* LIVE CLASS — Start Meeting (creates BBB meeting on-demand) */}
-                {l.lectureType === 'live' && !l.meetingLink && (
-                  <button
-                    onClick={() => handleStartMeeting(l._id)}
-                    disabled={startingMeeting === l._id}
-                    className="w-full py-2.5 bg-rose-600 text-white rounded-xl font-bold text-[11px] uppercase tracking-wider hover:bg-rose-700 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
-                  >
-                    {startingMeeting === l._id ? (
-                      <><Loader2 size={14} className="animate-spin" /> Starting...</>
-                    ) : (
-                      <><Radio size={14} /> Start Meeting</>
-                    )}
-                  </button>
-                )}
-
-                {/* LIVE CLASS — Join existing meeting as Host */}
-                {l.lectureType === 'live' && l.meetingLink && (
-                  <button
-                    onClick={() => handleStartMeeting(l._id)}
-                    disabled={startingMeeting === l._id}
-                    className="w-full py-2.5 bg-rose-600 text-white rounded-xl font-bold text-[11px] uppercase tracking-wider hover:bg-rose-700 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
-                  >
-                    {startingMeeting === l._id ? (
-                      <><Loader2 size={14} className="animate-spin" /> Joining...</>
-                    ) : (
-                      <><Radio size={14} /> Join as Host</>
-                    )}
-                  </button>
-                )}
-
-                {l.lectureType === 'article' && (
-                  <button
-                    className="w-full py-2.5 bg-amber-500 text-white rounded-xl font-bold text-[11px] uppercase tracking-wider hover:bg-amber-600 transition-all flex items-center justify-center gap-2"
-                  >
-                    <FileText size={14} /> Read Article
-                  </button>
-                )}
-
-                <button
-                  onClick={() => setSelectedLecture(l)}
-                  className="w-full py-2.5 bg-slate-800 text-white rounded-xl font-bold text-[11px] uppercase tracking-wider hover:bg-black transition-all flex items-center justify-center gap-2"
-                >
-                  <FolderOpen size={14} /> Materials
-                </button>
-
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleEdit(l)}
-                    className="flex-1 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg font-bold text-[10px] uppercase hover:bg-slate-50 transition-all flex items-center justify-center gap-1"
-                  >
-                    <Edit3 size={12} /> Edit
-                  </button>
-                  <button
-                    onClick={() => deleteLecture(l._id)}
-                    className="flex-1 py-2 bg-white border border-slate-200 text-rose-500 rounded-lg font-bold text-[10px] uppercase hover:bg-rose-50 transition-all flex items-center justify-center gap-1"
-                  >
-                    <Trash2 size={12} /> Delete
-                  </button>
-                </div>
+          {/* Past History Section */}
+          {pastLectures.length > 0 && (
+            <div>
+              <h2 className="text-xl font-bold text-slate-400 mb-6 flex items-center gap-2">
+                <div className="w-2 h-6 bg-slate-300 rounded-full"></div> Past History
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {pastLectures.map(l => <LectureCard key={l._id} l={l} isPast={true} />)}
               </div>
             </div>
-          ))}
-        </div>
-      )}
-
-      {/* --- No Data Placeholder --- */}
-      {!loading && filteredLectures.length === 0 && (
-        <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
-          <Layers className="text-slate-200 mx-auto mb-3" size={40} />
-          <p className="text-slate-400 text-sm font-medium">No lectures found.</p>
-        </div>
+          )}
+        </>
       )}
 
       {/* --- VIDEO MODAL (BUNNY.NET) --- */}
