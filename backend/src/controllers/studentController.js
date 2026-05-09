@@ -216,7 +216,19 @@ exports.addStudent = async (req, res) => {
 exports.updateStudent = async (req, res) => {
   try {
     const updateData = { ...req.body };
-    if (updateData.password) updateData.password = await bcrypt.hash(updateData.password, 10);
+
+    // Map enrolledCourse (from frontend) to enrolledCourses array (model field)
+    if (updateData.enrolledCourse) {
+      updateData.enrolledCourses = [updateData.enrolledCourse];
+      delete updateData.enrolledCourse;
+    }
+
+    if (updateData.password) {
+      updateData.password = await bcrypt.hash(updateData.password, 10);
+    } else {
+      delete updateData.password;
+    }
+
     const student = await User.findByIdAndUpdate(req.params.id, updateData, { new: true }).select("-password");
     res.json({ success: true, student });
   } catch (error) { res.status(500).json({ success: false }); }
