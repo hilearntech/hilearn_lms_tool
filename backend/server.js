@@ -1,7 +1,7 @@
 require("dotenv").config();
 const app = require("./src/app");
 const connectDB = require("./src/config/db");
-const cron = require("node-cron"); // 1. Cron import karein
+const cron = require("node-cron");
 const Notification = require("./src/models/Notification");
 const Lecture = require("./src/models/Lecture");
 const User = require("./src/models/User");
