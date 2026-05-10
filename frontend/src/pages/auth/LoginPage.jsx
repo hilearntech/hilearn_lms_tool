@@ -56,10 +56,6 @@ const Login = () => {
     }
   };
 
-  const handleGoogleLogin = () => { window.location.href = "https://hilearnlmstool-production.up.railway.app/api/auth/google"; };
-  const handleGithubLogin = () => { window.location.href = "https://hilearnlmstool-production.up.railway.app/api/auth/github"; };
-  const handleFacebookLogin = () => { window.location.href = "https://hilearnlmstool-production.up.railway.app/api/auth/facebook"; };
-
   return (
     <div className="min-h-screen bg-gray-50 flex">
 
@@ -125,32 +121,6 @@ const Login = () => {
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Sign In</h2>
             <p className="text-gray-600">Enter your credentials to access your account</p>
-          </div>
-
-          {/* Social Login Buttons */}
-          <div className="space-y-3 mb-6">
-            <button
-              onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center gap-3 border-2 border-gray-300 py-3 rounded-lg hover:border-emerald-600 hover:bg-emerald-50 transition-all font-medium text-gray-700"
-            >
-              <FaGoogle className="text-red-500 text-lg" />
-              Continue with Google
-            </button>
-
-            <div className="grid grid-cols-2 gap-3">
-              <button onClick={handleGithubLogin} className="flex items-center justify-center gap-2 border-2 border-gray-300 py-3 rounded-lg hover:border-emerald-600 hover:bg-emerald-50 transition-all font-medium text-gray-700">
-                <FaGithub className="text-lg" /> GitHub
-              </button>
-              <button onClick={handleFacebookLogin} className="flex items-center justify-center gap-2 border-2 border-gray-300 py-3 rounded-lg hover:border-emerald-600 hover:bg-emerald-50 transition-all font-medium text-gray-700">
-                <FaFacebook className="text-blue-600 text-lg" /> Facebook
-              </button>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4 my-6">
-            <div className="flex-1 h-px bg-gray-300"></div>
-            <span className="text-sm text-gray-500 font-medium">OR</span>
-            <div className="flex-1 h-px bg-gray-300"></div>
           </div>
 
           {/* Form with your logic */}
